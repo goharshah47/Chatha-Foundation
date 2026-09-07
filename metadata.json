@@ -1,0 +1,6 @@
+{
+  "name": "Chatha Foundation",
+  "description": "Chatha Foundation — Humanitarian charity dedicated to humanity, dignity, hope, and direct impact through clean water, food aid, orphan care, and family emergency relief.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
