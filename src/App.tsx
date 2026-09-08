@@ -12,10 +12,14 @@ import { ImpactSection } from './components/ImpactSection';
 import { FinalCta } from './components/FinalCta';
 import { Footer } from './components/Footer';
 import { DonationModal } from './components/DonationModal';
+import { SearchModal } from './components/SearchModal';
+import { AccountModal } from './components/AccountModal';
 import { CauseId } from './types';
 
 export default function App() {
   const [donateModalOpen, setDonateModalOpen] = useState(false);
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
+  const [accountModalOpen, setAccountModalOpen] = useState(false);
   const [selectedCause, setSelectedCause] = useState<CauseId>('where-needed');
 
   const handleOpenDonate = (causeId?: CauseId) => {
@@ -26,9 +30,13 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FBFBF9] text-[#1E2621] font-sans selection:bg-[#0F3D2E]/15 selection:text-[#0F3D2E]">
-      {/* Sticky Header with single primary CTA */}
-      <Header onOpenDonate={() => handleOpenDonate('where-needed')} />
+    <div className="min-h-screen bg-[#FBFBF9] text-[#1E2621] font-sans selection:bg-brand-light selection:text-brand-primary">
+      {/* Sticky Header with single primary CTA, search, account & multi-level dropdowns */}
+      <Header
+        onOpenDonate={handleOpenDonate}
+        onOpenSearch={() => setSearchModalOpen(true)}
+        onOpenAccount={() => setAccountModalOpen(true)}
+      />
 
       {/* SECTION 1 — HERO CAROUSEL (60-70vh Editorial visual centerpiece) */}
       <main>
@@ -49,6 +57,20 @@ export default function App() {
 
       {/* FOOTER */}
       <Footer onOpenDonate={() => handleOpenDonate('where-needed')} />
+
+      {/* Search Modal */}
+      <SearchModal
+        isOpen={searchModalOpen}
+        onClose={() => setSearchModalOpen(false)}
+        onSelectCause={(causeId) => handleOpenDonate(causeId)}
+      />
+
+      {/* Account Modal */}
+      <AccountModal
+        isOpen={accountModalOpen}
+        onClose={() => setAccountModalOpen(false)}
+        onOpenDonate={() => handleOpenDonate('where-needed')}
+      />
 
       {/* Non-ecommerce Clean Donation Flow Modal */}
       <DonationModal

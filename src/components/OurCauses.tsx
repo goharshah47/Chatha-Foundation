@@ -20,8 +20,8 @@ export const OurCauses: React.FC<OurCausesProps> = ({ onSelectCause }) => {
         {/* Section Heading */}
         <div className="max-w-xl mb-12 sm:mb-16 space-y-3">
           <div className="inline-flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#0F3D2E]" />
-            <span className="text-[12px] font-bold tracking-[0.2em] text-[#0F3D2E] uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
+            <span className="text-[12px] font-bold tracking-[0.2em] text-brand-primary uppercase">
               Core Relief
             </span>
           </div>
@@ -55,7 +55,7 @@ export const OurCauses: React.FC<OurCausesProps> = ({ onSelectCause }) => {
               {/* Text & Cause Info */}
               <div className="space-y-2.5 flex-1">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-medium tracking-tight text-[#14231B] group-hover:text-[#0F3D2E] transition-colors">
+                  <h3 className="text-xl font-medium tracking-tight text-[#14231B] group-hover:text-brand-primary transition-colors">
                     {cause.name}
                   </h3>
                   <span className="text-[11px] font-medium text-[#738277] tracking-wider uppercase">
@@ -72,7 +72,7 @@ export const OurCauses: React.FC<OurCausesProps> = ({ onSelectCause }) => {
                 <button
                   id={`cause-donate-btn-${cause.id}`}
                   onClick={() => onSelectCause(cause.id)}
-                  className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-[#0F3D2E] uppercase group-hover:text-[#0A2C21] cursor-pointer"
+                  className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-brand-primary uppercase group-hover:text-brand-hover cursor-pointer"
                 >
                   <span>Support {cause.name}</span>
                   <ArrowRight

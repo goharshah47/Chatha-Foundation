@@ -12,8 +12,8 @@ export const ImpactSection: React.FC = () => {
         {/* Minimal Header */}
         <div className="text-center max-w-xl mx-auto mb-14 sm:mb-18 space-y-3">
           <div className="inline-flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#0F3D2E]" />
-            <span className="text-[12px] font-bold tracking-[0.2em] text-[#0F3D2E] uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
+            <span className="text-[12px] font-bold tracking-[0.2em] text-brand-primary uppercase">
               Proven Delivery
             </span>
           </div>
@@ -34,7 +34,7 @@ export const ImpactSection: React.FC = () => {
                 idx > 0 ? 'pt-8 sm:pt-0 sm:pl-8' : ''
               }`}
             >
-              <div className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-[#0F3D2E]">
+              <div className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-brand-primary">
                 {stat.value}
               </div>
               <div className="text-lg font-medium text-[#18261E] tracking-tight">

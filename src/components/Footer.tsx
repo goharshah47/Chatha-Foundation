@@ -37,12 +37,12 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate }) => {
           {/* Brand Column */}
           <div className="md:col-span-5 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#0F3D2E]" />
+              <div className="w-2.5 h-2.5 rounded-full bg-brand-primary" />
               <span className="font-semibold text-xl tracking-tight text-[#14231B]">
                 Chatha <span className="font-light text-[#55655B]">Foundation</span>
               </span>
             </div>
-            <div className="text-xs font-semibold tracking-wider text-[#0F3D2E] uppercase">
+            <div className="text-xs font-semibold tracking-wider text-brand-primary uppercase">
               Humanity · Dignity · Hope · Impact
             </div>
             <p className="text-sm text-[#5B6A60] leading-relaxed max-w-sm">
@@ -55,14 +55,14 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate }) => {
 
           {/* Minimal Navigation Columns */}
           <div className="md:col-span-3 space-y-3">
-            <div className="text-xs font-semibold tracking-wider text-[#0F3D2E] uppercase">
+            <div className="text-xs font-semibold tracking-wider text-brand-primary uppercase">
               Explore
             </div>
             <ul className="space-y-2.5 text-sm text-[#46544B]">
               <li>
                 <button
                   onClick={() => scrollToSection('hero')}
-                  className="hover:text-[#0F3D2E] transition-colors cursor-pointer"
+                  className="hover:text-brand-primary transition-colors cursor-pointer"
                 >
                   Featured Campaigns
                 </button>
@@ -70,7 +70,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate }) => {
               <li>
                 <button
                   onClick={() => scrollToSection('causes')}
-                  className="hover:text-[#0F3D2E] transition-colors cursor-pointer"
+                  className="hover:text-brand-primary transition-colors cursor-pointer"
                 >
                   Causes & Programs
                 </button>
@@ -78,7 +78,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate }) => {
               <li>
                 <button
                   onClick={() => scrollToSection('story')}
-                  className="hover:text-[#0F3D2E] transition-colors cursor-pointer"
+                  className="hover:text-brand-primary transition-colors cursor-pointer"
                 >
                   Field Dispatch
                 </button>
@@ -86,7 +86,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate }) => {
               <li>
                 <button
                   onClick={() => scrollToSection('impact')}
-                  className="hover:text-[#0F3D2E] transition-colors cursor-pointer"
+                  className="hover:text-brand-primary transition-colors cursor-pointer"
                 >
                   Verified Impact
                 </button>
@@ -94,7 +94,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate }) => {
               <li>
                 <button
                   onClick={onOpenDonate}
-                  className="font-medium text-[#0F3D2E] hover:underline cursor-pointer"
+                  className="font-medium text-brand-primary hover:underline cursor-pointer"
                 >
                   Donate to a Cause
                 </button>
@@ -104,7 +104,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate }) => {
 
           {/* Field Dispatches Newsletter Column */}
           <div className="md:col-span-4 space-y-3">
-            <div className="text-xs font-semibold tracking-wider text-[#0F3D2E] uppercase">
+            <div className="text-xs font-semibold tracking-wider text-brand-primary uppercase">
               Field Dispatches
             </div>
             <p className="text-sm text-[#5B6A60] leading-relaxed">
@@ -112,13 +112,13 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate }) => {
             </p>
 
             {subscribed ? (
-              <div className="p-3 rounded-xl bg-[#EBE7DD] text-xs font-medium text-[#0F3D2E] flex items-center gap-2">
+              <div className="p-3 rounded-xl bg-[#EBE7DD] text-xs font-medium text-brand-primary flex items-center gap-2">
                 <Check size={14} />
                 <span>Thank you. You will receive our next quarterly dispatch.</span>
               </div>
             ) : (
               <form onSubmit={handleSubscribe} className="space-y-2">
-                <div className="flex items-center rounded-full bg-[#FBFBF9] border border-[#DDD8CE] p-1 focus-within:border-[#0F3D2E]">
+                <div className="flex items-center rounded-full bg-[#FBFBF9] border border-[#DDD8CE] p-1 focus-within:border-brand-primary">
                   <input
                     type="email"
                     required
@@ -129,7 +129,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate }) => {
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2 rounded-full bg-[#0F3D2E] text-[#FBFBF9] text-xs font-medium hover:bg-[#0A2C21] transition-colors cursor-pointer flex items-center gap-1 shrink-0"
+                    className="px-4 py-2 rounded-full bg-brand-primary text-[#FBFBF9] text-xs font-medium hover:bg-brand-hover transition-colors cursor-pointer flex items-center gap-1 shrink-0"
                     aria-label="Subscribe to dispatches"
                   >
                     <span>Join</span>

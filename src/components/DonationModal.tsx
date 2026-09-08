@@ -115,8 +115,8 @@ export const DonationModal: React.FC<DonationModalProps> = ({
         <div className="flex items-center justify-between px-6 sm:px-8 pt-6 pb-4 border-b border-[#ECE8E0]">
           <div>
             <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#0F3D2E]" />
-              <span className="text-[11px] font-bold tracking-[0.2em] text-[#0F3D2E] uppercase">
+              <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
+              <span className="text-[11px] font-bold tracking-[0.2em] text-brand-primary uppercase">
                 Humanitarian Giving
               </span>
             </div>
@@ -184,7 +184,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                         onClick={() => handlePresetClick(amt)}
                         className={`py-3 rounded-xl text-sm font-semibold tracking-wide border transition-all cursor-pointer ${
                           isSelected
-                            ? 'bg-[#0F3D2E] text-[#FBFBF9] border-[#0F3D2E] shadow-xs'
+                            ? 'bg-brand-primary text-[#FBFBF9] border-brand-primary shadow-xs'
                             : 'bg-[#F7F5EF] text-[#2C3931] border-[#E3DFD5] hover:border-[#C9C4B7]'
                         }`}
                         id={`amt-${amt}`}
@@ -198,7 +198,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                     onClick={handleCustomClick}
                     className={`py-3 rounded-xl text-sm font-semibold tracking-wide border transition-all cursor-pointer ${
                       isCustom
-                        ? 'bg-[#0F3D2E] text-[#FBFBF9] border-[#0F3D2E] shadow-xs'
+                        ? 'bg-brand-primary text-[#FBFBF9] border-brand-primary shadow-xs'
                         : 'bg-[#F7F5EF] text-[#2C3931] border-[#E3DFD5] hover:border-[#C9C4B7]'
                     }`}
                     id="amt-other-btn"
@@ -219,7 +219,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                         value={customAmountInput}
                         onChange={(e) => setCustomAmountInput(e.target.value)}
                         placeholder="Enter amount"
-                        className="w-full pl-8 pr-4 py-2.5 rounded-xl bg-[#F7F5EF] border border-[#DDD9CF] text-[#14231B] text-sm font-medium focus:outline-none focus:border-[#0F3D2E] focus:ring-1 focus:ring-[#0F3D2E]"
+                        className="w-full pl-8 pr-4 py-2.5 rounded-xl bg-[#F7F5EF] border border-[#DDD9CF] text-[#14231B] text-sm font-medium focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary"
                         autoFocus
                         id="custom-amount-input"
                       />
@@ -230,7 +230,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
 
               {/* Tangible Humanitarian Impact Note */}
               <div className="p-4 rounded-xl bg-[#F4F1EA] border border-[#E5E0D5] text-xs text-[#3C4A41] leading-relaxed flex items-start gap-2.5">
-                <Heart size={15} className="text-[#0F3D2E] shrink-0 mt-0.5" />
+                <Heart size={15} className="text-brand-primary shrink-0 mt-0.5" />
                 <span>{getImpactDescription(activeAmount, selectedCause)}</span>
               </div>
 
@@ -249,7 +249,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                         onClick={() => setSelectedCause(c.id)}
                         className={`p-2.5 text-left rounded-xl text-xs font-medium border transition-all cursor-pointer truncate ${
                           isSelected
-                            ? 'bg-[#0F3D2E]/10 border-[#0F3D2E] text-[#0F3D2E] font-semibold'
+                            ? 'bg-brand-light border-brand-primary text-brand-primary font-semibold'
                             : 'bg-[#FBFBF9] border-[#E3DFD5] text-[#47554D] hover:border-[#C4BEAF]'
                         }`}
                         id={`choose-cause-${c.id}`}
@@ -266,7 +266,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setStep('details')}
-                  className="w-full py-3.5 rounded-full bg-[#0F3D2E] text-[#FBFBF9] text-sm font-semibold tracking-wide hover:bg-[#0A2C21] active:scale-[0.99] transition-all shadow-[0_3px_12px_rgba(15,61,46,0.2)] cursor-pointer flex items-center justify-center gap-2 group"
+                  className="w-full py-3.5 rounded-full bg-brand-primary text-[#FBFBF9] text-sm font-semibold tracking-wide hover:bg-brand-hover active:scale-[0.99] transition-all shadow-brand-sm cursor-pointer flex items-center justify-center gap-2 group"
                   id="donate-continue-btn"
                 >
                   <span>Donate £{activeAmount} {frequency === 'monthly' ? '/ month' : 'now'}</span>
@@ -279,7 +279,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
 
               {/* Trust Badge */}
               <div className="flex items-center justify-center gap-2 text-[11px] text-[#718076]">
-                <ShieldCheck size={13} className="text-[#0F3D2E]" />
+                <ShieldCheck size={13} className="text-brand-primary" />
                 <span>100% donation guarantee · 256-bit encrypted giving</span>
               </div>
             </div>
@@ -305,7 +305,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                   value={donorName}
                   onChange={(e) => setDonorName(e.target.value)}
                   placeholder="e.g. Sarah Jenkins"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#F7F5EF] border border-[#DDD9CF] text-[#14231B] text-sm focus:outline-none focus:border-[#0F3D2E]"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#F7F5EF] border border-[#DDD9CF] text-[#14231B] text-sm focus:outline-none focus:border-brand-primary"
                   id="donor-name-input"
                 />
               </div>
@@ -320,7 +320,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                   value={donorEmail}
                   onChange={(e) => setDonorEmail(e.target.value)}
                   placeholder="sarah@example.com"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#F7F5EF] border border-[#DDD9CF] text-[#14231B] text-sm focus:outline-none focus:border-[#0F3D2E]"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#F7F5EF] border border-[#DDD9CF] text-[#14231B] text-sm focus:outline-none focus:border-brand-primary"
                   id="donor-email-input"
                 />
               </div>
@@ -332,7 +332,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                   id="gift-aid-checkbox"
                   checked={giftAid}
                   onChange={(e) => setGiftAid(e.target.checked)}
-                  className="mt-0.5 rounded border-[#C4BEAF] text-[#0F3D2E] focus:ring-[#0F3D2E] cursor-pointer"
+                  className="mt-0.5 rounded border-[#C4BEAF] text-brand-primary focus:ring-brand-primary cursor-pointer"
                 />
                 <label htmlFor="gift-aid-checkbox" className="text-xs text-[#3C4A41] cursor-pointer">
                   <span className="font-medium text-[#14231B]">Add 25% Gift Aid at no cost to you.</span> I am a UK taxpayer and would like Chatha Foundation to reclaim tax on all my donations.
@@ -349,7 +349,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3 rounded-full bg-[#0F3D2E] text-[#FBFBF9] text-sm font-semibold tracking-wide hover:bg-[#0A2C21] transition-all shadow-md cursor-pointer flex items-center justify-center gap-2"
+                  className="flex-1 py-3 rounded-full bg-brand-primary text-[#FBFBF9] text-sm font-semibold tracking-wide hover:bg-brand-hover transition-all shadow-md cursor-pointer flex items-center justify-center gap-2"
                   id="submit-donation-btn"
                 >
                   <span>Complete Gift of £{activeAmount}</span>
@@ -362,7 +362,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
           {/* STEP 3: Thank You / Confirmation */}
           {step === 'success' && (
             <div className="text-center py-6 space-y-5 animate-in fade-in duration-200">
-              <div className="w-14 h-14 mx-auto rounded-full bg-[#0F3D2E]/10 flex items-center justify-center text-[#0F3D2E]">
+              <div className="w-14 h-14 mx-auto rounded-full bg-brand-light flex items-center justify-center text-brand-primary">
                 <Check size={28} />
               </div>
 
@@ -398,7 +398,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-8 py-3 rounded-full bg-[#0F3D2E] text-[#FBFBF9] text-xs font-semibold tracking-wider hover:bg-[#0A2C21] transition-all cursor-pointer"
+                  className="px-8 py-3 rounded-full bg-brand-primary text-[#FBFBF9] text-xs font-semibold tracking-wider hover:bg-brand-hover transition-all cursor-pointer"
                   id="finish-donate-modal"
                 >
                   RETURN TO WEBSITE

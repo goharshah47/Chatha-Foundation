@@ -28,8 +28,8 @@ export const StoryModal: React.FC<StoryModalProps> = ({
       >
         {/* Header bar */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#EDE9E1] bg-[#FAF8F4]">
-          <div className="flex items-center gap-2 text-xs font-semibold tracking-wider text-[#0F3D2E] uppercase">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#0F3D2E]" />
+          <div className="flex items-center gap-2 text-xs font-semibold tracking-wider text-brand-primary uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
             Field Story · {HUMAN_STORY_DATA.causeTag}
           </div>
           <button
@@ -54,7 +54,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({
               categoryLabel="Field Story"
             />
             <div className="absolute bottom-3 left-3 flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FBFBF9]/90 backdrop-blur-md text-[11px] font-medium text-[#293830] border border-[#EAE6DD]">
-              <MapPin size={12} className="text-[#0F3D2E]" />
+              <MapPin size={12} className="text-brand-primary" />
               {HUMAN_STORY_DATA.location}
             </div>
           </div>
@@ -76,24 +76,24 @@ export const StoryModal: React.FC<StoryModalProps> = ({
 
           {/* Impact outcome notes */}
           <div className="p-5 rounded-xl bg-[#F4F1EA] border border-[#E5E1D6] space-y-2.5">
-            <h4 className="text-xs font-semibold tracking-wider text-[#0F3D2E] uppercase">
+            <h4 className="text-xs font-semibold tracking-wider text-brand-primary uppercase">
               Sustainable Project Outcomes
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm text-[#3E4D43]">
               <div className="flex items-center gap-2">
-                <CheckCircle2 size={14} className="text-[#0F3D2E] shrink-0" />
+                <CheckCircle2 size={14} className="text-brand-primary shrink-0" />
                 <span>Solar-powered borehole operating 24/7</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 size={14} className="text-[#0F3D2E] shrink-0" />
+                <CheckCircle2 size={14} className="text-brand-primary shrink-0" />
                 <span>340 neighboring families directly served</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 size={14} className="text-[#0F3D2E] shrink-0" />
+                <CheckCircle2 size={14} className="text-brand-primary shrink-0" />
                 <span>Children returned to continuous schooling</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 size={14} className="text-[#0F3D2E] shrink-0" />
+                <CheckCircle2 size={14} className="text-brand-primary shrink-0" />
                 <span>Community-managed maintenance committee</span>
               </div>
             </div>
@@ -110,7 +110,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({
               onClose();
               onOpenDonate();
             }}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-[#0F3D2E] text-[#FBFBF9] text-xs font-semibold tracking-wide hover:bg-[#0A2C21] transition-all cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-brand-primary text-[#FBFBF9] text-xs font-semibold tracking-wide hover:bg-brand-hover transition-all cursor-pointer"
             id="story-modal-donate-btn"
           >
             <span>DONATE NOW</span>

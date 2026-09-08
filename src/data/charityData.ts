@@ -6,13 +6,13 @@ export const HERO_CAMPAIGNS: CampaignSlide[] = [
     number: '01',
     causeId: 'water',
     label: 'WATER AID',
-    headline: 'Clean water\nshould never be\na privilege.',
-    supportingText: 'Over 785 million people lack safe drinking water. A single community borehole provides thousands with health, dignity, and a future.',
+    headline: 'You Can Change Their Future.\nClean water should never be a privilege.',
+    supportingText: 'Over 785 million people lack safe drinking water. A single community borehole provides health, dignity, and generational hope.',
     impactMessage: 'Your support can help families access clean water.',
-    imageUrl: 'https://images.unsplash.com/photo-1594708767771-a7502209ff51?auto=format&fit=crop&w=1600&q=85',
+    imageUrl: 'https://images.unsplash.com/photo-1594708767771-a7502209ff51?auto=format&fit=crop&w=1920&q=85',
     fallbackUrls: [
-      'https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1600&q=85'
+      'https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&w=1920&q=85',
+      'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1920&q=85'
     ],
     imageAlt: 'Community members gathering fresh, clean water from a newly installed sustainable well pump',
     location: 'Turkana Basin, Kenya'
@@ -22,13 +22,13 @@ export const HERO_CAMPAIGNS: CampaignSlide[] = [
     number: '02',
     causeId: 'food',
     label: 'FOOD AID',
-    headline: 'No family\nshould face hunger\nin silence.',
-    supportingText: 'Emergency food baskets and drought-resilient crops deliver vital nourishment to communities enduring extreme climatic hardship.',
+    headline: 'Open Your Heart.\nNo family should have to wonder where their next meal comes from.',
+    supportingText: 'Emergency food baskets and drought-resilient crops deliver vital daily nourishment to households facing severe hardship.',
     impactMessage: 'Your support provides life-saving nutritious meals to vulnerable households.',
-    imageUrl: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1600&q=85',
+    imageUrl: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1920&q=85',
     fallbackUrls: [
-      'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=1600&q=85'
+      'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1920&q=85',
+      'https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=1920&q=85'
     ],
     imageAlt: 'Humanitarian volunteers packing and distributing essential food parcels to families in need',
     location: 'Somaliland Relief Corridor'
@@ -38,15 +38,15 @@ export const HERO_CAMPAIGNS: CampaignSlide[] = [
     number: '03',
     causeId: 'orphans',
     label: 'ORPHAN SUPPORT',
-    headline: 'Every child\ndeserves warmth,\ncare, and a future.',
+    headline: 'Every Child Deserves The Chance\nTo build a better future.',
     supportingText: 'Comprehensive orphan sponsorship provides education, balanced nutrition, healthcare, and safe shelter to children who have lost their guardians.',
     impactMessage: 'Your support gives an orphaned child safety, schooling, and hope.',
-    imageUrl: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1600&q=85',
+    imageUrl: 'https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=1920&q=85',
     fallbackUrls: [
-      'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=1600&q=85'
+      'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1920&q=85',
+      'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1920&q=85'
     ],
-    imageAlt: 'Children in a bright classroom reading books together in an atmosphere of warmth and dignity',
+    imageAlt: 'Children in an educational center reading together in an atmosphere of warmth and dignity',
     location: 'Bekaa Valley Learning Center'
   },
   {
@@ -54,13 +54,13 @@ export const HERO_CAMPAIGNS: CampaignSlide[] = [
     number: '04',
     causeId: 'family',
     label: 'FAMILY SUPPORT',
-    headline: 'Restoring dignity\nand shelter to\ndisplaced families.',
+    headline: 'Small Acts Of Kindness\nCan help families through difficult times.',
     supportingText: 'We provide weather-resistant shelters, clean bedding, and livelihood starter kits so parents can protect their children and regain self-reliance.',
     impactMessage: 'Your support helps displaced families find safety and shelter.',
-    imageUrl: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=1600&q=85',
+    imageUrl: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=1920&q=85',
     fallbackUrls: [
-      'https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=1600&q=85'
+      'https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1920&q=85',
+      'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=1920&q=85'
     ],
     imageAlt: 'Mother holding her young child with gentle warmth and protective dignity',
     location: 'North Aleppo Displaced Settlement'
@@ -70,13 +70,13 @@ export const HERO_CAMPAIGNS: CampaignSlide[] = [
     number: '05',
     causeId: 'ramadan',
     label: 'RAMADAN GIVING',
-    headline: 'Multiply your\nblessings. Share\nyour table.',
+    headline: 'Multiply Your Blessings.\nShare your blessings with families who need them most.',
     supportingText: 'Provide nutritious Iftar meals and full-month food parcels to fasting families facing extreme poverty during the sacred month.',
     impactMessage: 'Your support ensures fasting families have warm food at sunset.',
-    imageUrl: 'https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=1600&q=85',
+    imageUrl: 'https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=1920&q=85',
     fallbackUrls: [
-      'https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1600&q=85'
+      'https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&w=1920&q=85',
+      'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1920&q=85'
     ],
     imageAlt: 'Warm dates and traditional lantern light prepared for a community Iftar gathering',
     location: 'Global Ramadan Distribution'

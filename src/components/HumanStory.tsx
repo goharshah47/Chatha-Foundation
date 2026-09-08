@@ -33,7 +33,7 @@ export const HumanStory: React.FC<HumanStoryProps> = ({ onOpenDonate }) => {
                   categoryLabel="Human Story"
                 />
                 <div className="absolute bottom-4 left-4 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#FBFBF9]/90 backdrop-blur-md text-[12px] font-medium text-[#25322A] border border-[#E8E4DA]/80 shadow-xs">
-                  <MapPin size={13} className="text-[#0F3D2E]" />
+                  <MapPin size={13} className="text-brand-primary" />
                   <span>{HUMAN_STORY_DATA.location}</span>
                 </div>
               </div>
@@ -42,8 +42,8 @@ export const HumanStory: React.FC<HumanStoryProps> = ({ onOpenDonate }) => {
             {/* Right: Editorial Narrative */}
             <div className="lg:col-span-6 space-y-6">
               <div className="inline-flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#0F3D2E]" />
-                <span className="text-[12px] font-bold tracking-[0.2em] text-[#0F3D2E] uppercase">
+                <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
+                <span className="text-[12px] font-bold tracking-[0.2em] text-brand-primary uppercase">
                   Human Story
                 </span>
               </div>
@@ -60,9 +60,9 @@ export const HumanStory: React.FC<HumanStoryProps> = ({ onOpenDonate }) => {
                 <button
                   id="read-human-story-btn"
                   onClick={() => setIsModalOpen(true)}
-                  className="inline-flex items-center gap-2.5 text-[15px] font-semibold text-[#0F3D2E] hover:text-[#09271E] group cursor-pointer"
+                  className="inline-flex items-center gap-2.5 text-[15px] font-semibold text-brand-primary hover:text-brand-hover group cursor-pointer"
                 >
-                  <span className="underline underline-offset-8 decoration-[#0F3D2E]/40 group-hover:decoration-[#0F3D2E] transition-all">
+                  <span className="underline underline-offset-8 decoration-brand-primary/40 group-hover:decoration-brand-primary transition-all">
                     Read the story
                   </span>
                   <ArrowRight

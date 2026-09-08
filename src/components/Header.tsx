@@ -1,13 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Menu,
+  X,
+  ChevronRight,
+  Search,
+  User,
+  Heart,
+  Droplets,
+  Utensils,
+  BookOpen,
+  Home,
+  Activity,
+  AlertCircle
+} from 'lucide-react';
+import { CauseId } from '../types';
+import { ThemeSelector } from './ThemeSelector';
 
 interface HeaderProps {
-  onOpenDonate: () => void;
+  onOpenDonate: (causeId?: CauseId) => void;
+  onOpenSearch: () => void;
+  onOpenAccount: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onOpenDonate }) => {
+export const Header: React.FC<HeaderProps> = ({
+  onOpenDonate,
+  onOpenSearch,
+  onOpenAccount
+}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileExpandedSection, setMobileExpandedSection] = useState<string | null>(null);
+
+  // Dropdown states
+  const [activeDropdown, setActiveDropdown] = useState<'causes' | 'our-work' | 'impact' | 'about' | null>(null);
+  const [activeSubmenu, setActiveSubmenu] = useState<'appeals' | 'religious' | null>(null);
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,8 +44,32 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDonate }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleMouseEnterNav = (menu: 'causes' | 'our-work' | 'impact' | 'about') => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setActiveDropdown(menu);
+  };
+
+  const handleMouseLeaveNav = () => {
+    closeTimeoutRef.current = setTimeout(() => {
+      setActiveDropdown(null);
+      setActiveSubmenu(null);
+    }, 180);
+  };
+
+  const handleMouseEnterSubmenu = (sub: 'appeals' | 'religious') => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setActiveSubmenu(sub);
+  };
+
   const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
+    setActiveDropdown(null);
     const element = document.getElementById(id);
     if (element) {
       const yOffset = -72;
@@ -32,15 +83,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDonate }) => {
       id="site-header"
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         isScrolled
-          ? 'bg-[#FBFBF9]/95 backdrop-blur-md border-b border-[#EBE7DF] py-3.5 shadow-[0_2px_12px_rgba(0,0,0,0.03)]'
-          : 'bg-[#FBFBF9] py-5 border-b border-transparent'
+          ? 'bg-[#FDFCFB]/98 backdrop-blur-md border-b border-[#E8E4DA] py-3 shadow-[0_2px_12px_rgba(0,0,0,0.04)]'
+          : 'bg-[#FDFCFB] py-4 sm:py-5 border-b border-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 flex items-center justify-between">
-        {/* Logo */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        
+        {/* LOGO: CHATHA FOUNDATION */}
         <a
           href="#"
-          className="group flex items-center gap-3 focus:outline-none"
+          className="group flex items-center gap-2.5 sm:gap-3 focus:outline-none"
           onClick={(e) => {
             e.preventDefault();
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -48,58 +100,472 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDonate }) => {
           id="logo-link"
           aria-label="Chatha Foundation Home"
         >
-          <div className="w-2.5 h-2.5 rounded-full bg-[#0F3D2E] transition-transform duration-300 group-hover:scale-125" />
-          <span className="font-semibold text-xl tracking-tight text-[#16221B]">
-            Chatha <span className="font-light text-[#526258]">Foundation</span>
+          <div className="w-2.5 h-2.5 rounded-full bg-brand-primary transition-transform duration-300 group-hover:scale-125" />
+          <span className="font-semibold text-lg sm:text-xl tracking-tight text-[#14221A]">
+            CHATHA <span className="font-light text-[#506055]">FOUNDATION</span>
           </span>
         </a>
 
-        {/* Minimal Navigation */}
-        <nav className="hidden md:flex items-center gap-9" aria-label="Main Navigation">
-          <button
-            onClick={() => scrollToSection('causes')}
-            className="text-[14px] font-medium text-[#46534B] hover:text-[#0F3D2E] transition-colors cursor-pointer"
-            id="nav-causes"
+        {/* MINIMAL & PREMIUM NAVIGATION WITH CLEAR HOVER UNDERLINES & DROPDOWNS */}
+        <nav
+          className="hidden md:flex items-center gap-7 lg:gap-9"
+          aria-label="Main Navigation"
+          onMouseLeave={handleMouseLeaveNav}
+        >
+          {/* 1. CAUSES DROPDOWN */}
+          <div
+            className="relative"
+            onMouseEnter={() => handleMouseEnterNav('causes')}
           >
-            Causes
-          </button>
-          <button
-            onClick={() => scrollToSection('story')}
-            className="text-[14px] font-medium text-[#46534B] hover:text-[#0F3D2E] transition-colors cursor-pointer"
-            id="nav-our-work"
+            <button
+              onClick={() => scrollToSection('causes')}
+              className="group relative py-2 text-[14px] font-medium text-[#37463E] hover:text-brand-primary transition-colors cursor-pointer flex items-center gap-1 focus:outline-none"
+              id="nav-causes"
+              aria-expanded={activeDropdown === 'causes'}
+              aria-haspopup="true"
+            >
+              <span>Causes</span>
+              {/* Clean thin underline animating smoothly from left to right */}
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-brand-primary nav-theme-underline scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left ease-out" />
+            </button>
+
+            {/* Causes Dropdown Menu */}
+            {activeDropdown === 'causes' && (
+              <div
+                className="absolute top-full left-0 pt-2 z-50 animate-in fade-in slide-in-from-top-1.5 duration-200"
+                onMouseEnter={() => handleMouseEnterNav('causes')}
+              >
+                {/* Bridge to prevent gap closing */}
+                <div className="w-[230px] rounded-xl bg-[#FDFCFB] border border-[#EAE5DC] shadow-[0_14px_36px_rgba(20,35,27,0.09)] py-1.5 overflow-visible">
+                  
+                  {/* Where Most Needed */}
+                  <button
+                    onClick={() => {
+                      onOpenDonate('where-needed');
+                      setActiveDropdown(null);
+                    }}
+                    className="w-full px-4 py-2.5 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors flex items-center justify-between"
+                  >
+                    <span>Where Most Needed</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
+                  </button>
+
+                  {/* Appeals (with multi-level adjacent submenu) */}
+                  <div
+                    className="relative group/sub"
+                    onMouseEnter={() => handleMouseEnterSubmenu('appeals')}
+                    onMouseLeave={() => setActiveSubmenu(null)}
+                  >
+                    <button
+                      className="w-full px-4 py-2.5 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors flex items-center justify-between"
+                      id="nav-sub-appeals"
+                    >
+                      <span>Appeals</span>
+                      <ChevronRight size={14} className="text-[#7A8A80]" />
+                    </button>
+
+                    {/* Small adjacent submenu for Appeals */}
+                    {activeSubmenu === 'appeals' && (
+                      <div
+                        className="absolute left-full top-0 pl-1.5 z-50 animate-in fade-in slide-in-from-left-1 duration-150"
+                        onMouseEnter={() => handleMouseEnterSubmenu('appeals')}
+                      >
+                        <div className="w-[215px] rounded-xl bg-[#FDFCFB] border border-[#EAE5DC] shadow-[0_14px_36px_rgba(20,35,27,0.09)] py-1.5">
+                          <button
+                            onClick={() => {
+                              onOpenDonate('where-needed');
+                              setActiveDropdown(null);
+                            }}
+                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors flex items-center justify-between"
+                          >
+                            <span>Sudan Emergency</span>
+                            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#DC2626]/10 text-[#DC2626]">Urgent</span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              onOpenDonate('where-needed');
+                              setActiveDropdown(null);
+                            }}
+                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors flex items-center justify-between"
+                          >
+                            <span>Gaza Relief</span>
+                            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#DC2626]/10 text-[#DC2626]">Critical</span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              onOpenDonate('where-needed');
+                              setActiveDropdown(null);
+                            }}
+                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                          >
+                            <span>Yemen Crisis</span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              onOpenDonate('where-needed');
+                              setActiveDropdown(null);
+                            }}
+                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                          >
+                            <span>Pakistan Flood Relief</span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              onOpenDonate('where-needed');
+                              setActiveDropdown(null);
+                            }}
+                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors border-t border-[#F0ECE4] mt-1 pt-1.5"
+                          >
+                            <span>Other Emergency Appeals</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Religious Giving (with multi-level adjacent submenu) */}
+                  <div
+                    className="relative group/sub"
+                    onMouseEnter={() => handleMouseEnterSubmenu('religious')}
+                    onMouseLeave={() => setActiveSubmenu(null)}
+                  >
+                    <button
+                      className="w-full px-4 py-2.5 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors flex items-center justify-between"
+                      id="nav-sub-religious"
+                    >
+                      <span>Religious Giving</span>
+                      <ChevronRight size={14} className="text-[#7A8A80]" />
+                    </button>
+
+                    {/* Small adjacent submenu for Religious Giving */}
+                    {activeSubmenu === 'religious' && (
+                      <div
+                        className="absolute left-full top-0 pl-1.5 z-50 animate-in fade-in slide-in-from-left-1 duration-150"
+                        onMouseEnter={() => handleMouseEnterSubmenu('religious')}
+                      >
+                        <div className="w-[215px] rounded-xl bg-[#FDFCFB] border border-[#EAE5DC] shadow-[0_14px_36px_rgba(20,35,27,0.09)] py-1.5">
+                          <button
+                            onClick={() => {
+                              onOpenDonate('where-needed');
+                              setActiveDropdown(null);
+                            }}
+                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                          >
+                            <span>100% Zakat Policy</span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              onOpenDonate('water');
+                              setActiveDropdown(null);
+                            }}
+                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                          >
+                            <span>Sadaqah Jariyah</span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              onOpenDonate('food');
+                              setActiveDropdown(null);
+                            }}
+                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                          >
+                            <span>Fidya & Kaffarah</span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              onOpenDonate('food');
+                              setActiveDropdown(null);
+                            }}
+                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                          >
+                            <span>Qurbani / Udhiyah</span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              onOpenDonate('ramadan');
+                              setActiveDropdown(null);
+                            }}
+                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors border-t border-[#F0ECE4] mt-1 pt-1.5 text-brand-primary font-semibold"
+                          >
+                            <span>Ramadan Giving</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="my-1 border-t border-[#F0ECE4]" />
+
+                  {/* Food / Hot Meals */}
+                  <button
+                    onClick={() => {
+                      onOpenDonate('food');
+                      setActiveDropdown(null);
+                    }}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    Food / Hot Meals
+                  </button>
+
+                  {/* Clean Water */}
+                  <button
+                    onClick={() => {
+                      onOpenDonate('water');
+                      setActiveDropdown(null);
+                    }}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    Clean Water
+                  </button>
+
+                  {/* Orphan Care */}
+                  <button
+                    onClick={() => {
+                      onOpenDonate('orphans');
+                      setActiveDropdown(null);
+                    }}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    Orphan Care
+                  </button>
+
+                  {/* Medical / Health */}
+                  <button
+                    onClick={() => {
+                      onOpenDonate('family');
+                      setActiveDropdown(null);
+                    }}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    Medical / Health
+                  </button>
+
+                  {/* Family Support */}
+                  <button
+                    onClick={() => {
+                      onOpenDonate('family');
+                      setActiveDropdown(null);
+                    }}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    Family Support
+                  </button>
+
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 2. OUR WORK DROPDOWN */}
+          <div
+            className="relative"
+            onMouseEnter={() => handleMouseEnterNav('our-work')}
           >
-            Our Work
-          </button>
-          <button
-            onClick={() => scrollToSection('impact')}
-            className="text-[14px] font-medium text-[#46534B] hover:text-[#0F3D2E] transition-colors cursor-pointer"
-            id="nav-impact"
+            <button
+              onClick={() => scrollToSection('story')}
+              className="group relative py-2 text-[14px] font-medium text-[#37463E] hover:text-brand-primary transition-colors cursor-pointer flex items-center gap-1 focus:outline-none"
+              id="nav-our-work"
+              aria-expanded={activeDropdown === 'our-work'}
+              aria-haspopup="true"
+            >
+              <span>Our Work</span>
+              {/* Clean thin underline */}
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-brand-primary nav-theme-underline scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left ease-out" />
+            </button>
+
+            {activeDropdown === 'our-work' && (
+              <div
+                className="absolute top-full left-0 pt-2 z-50 animate-in fade-in slide-in-from-top-1.5 duration-200"
+                onMouseEnter={() => handleMouseEnterNav('our-work')}
+              >
+                <div className="w-[235px] rounded-xl bg-[#FDFCFB] border border-[#EAE5DC] shadow-[0_14px_36px_rgba(20,35,27,0.09)] py-1.5">
+                  <button
+                    onClick={() => scrollToSection('story')}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    Emergency Response
+                  </button>
+                  <button
+                    onClick={() => scrollToSection('causes')}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    Sustainable Water Solutions
+                  </button>
+                  <button
+                    onClick={() => scrollToSection('causes')}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    Food Security & Nutrition
+                  </button>
+                  <button
+                    onClick={() => scrollToSection('causes')}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    Education & Child Protection
+                  </button>
+                  <button
+                    onClick={() => scrollToSection('story')}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    Field Stories & Dispatches
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 3. IMPACT DROPDOWN */}
+          <div
+            className="relative"
+            onMouseEnter={() => handleMouseEnterNav('impact')}
           >
-            Impact
-          </button>
-          <button
-            onClick={() => scrollToSection('about')}
-            className="text-[14px] font-medium text-[#46534B] hover:text-[#0F3D2E] transition-colors cursor-pointer"
-            id="nav-about"
+            <button
+              onClick={() => scrollToSection('impact')}
+              className="group relative py-2 text-[14px] font-medium text-[#37463E] hover:text-brand-primary transition-colors cursor-pointer flex items-center gap-1 focus:outline-none"
+              id="nav-impact"
+              aria-expanded={activeDropdown === 'impact'}
+              aria-haspopup="true"
+            >
+              <span>Impact</span>
+              {/* Clean thin underline */}
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-brand-primary nav-theme-underline scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left ease-out" />
+            </button>
+
+            {activeDropdown === 'impact' && (
+              <div
+                className="absolute top-full left-0 pt-2 z-50 animate-in fade-in slide-in-from-top-1.5 duration-200"
+                onMouseEnter={() => handleMouseEnterNav('impact')}
+              >
+                <div className="w-[230px] rounded-xl bg-[#FDFCFB] border border-[#EAE5DC] shadow-[0_14px_36px_rgba(20,35,27,0.09)] py-1.5">
+                  <button
+                    onClick={() => scrollToSection('impact')}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    100% Transparency Guarantee
+                  </button>
+                  <button
+                    onClick={() => scrollToSection('impact')}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    Global Impact Report
+                  </button>
+                  <button
+                    onClick={() => scrollToSection('impact')}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    Where Your Money Goes
+                  </button>
+                  <button
+                    onClick={() => scrollToSection('impact')}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    Financial Audits & Governance
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 4. ABOUT DROPDOWN */}
+          <div
+            className="relative"
+            onMouseEnter={() => handleMouseEnterNav('about')}
           >
-            About
-          </button>
+            <button
+              onClick={() => scrollToSection('about')}
+              className="group relative py-2 text-[14px] font-medium text-[#37463E] hover:text-brand-primary transition-colors cursor-pointer flex items-center gap-1 focus:outline-none"
+              id="nav-about"
+              aria-expanded={activeDropdown === 'about'}
+              aria-haspopup="true"
+            >
+              <span>About</span>
+              {/* Clean thin underline */}
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-brand-primary nav-theme-underline scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left ease-out" />
+            </button>
+
+            {activeDropdown === 'about' && (
+              <div
+                className="absolute top-full left-0 pt-2 z-50 animate-in fade-in slide-in-from-top-1.5 duration-200"
+                onMouseEnter={() => handleMouseEnterNav('about')}
+              >
+                <div className="w-[225px] rounded-xl bg-[#FDFCFB] border border-[#EAE5DC] shadow-[0_14px_36px_rgba(20,35,27,0.09)] py-1.5">
+                  <button
+                    onClick={() => scrollToSection('about')}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    Who We Are & Mission
+                  </button>
+                  <button
+                    onClick={() => scrollToSection('about')}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    Humanitarian Values
+                  </button>
+                  <button
+                    onClick={() => scrollToSection('about')}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    Board of Trustees
+                  </button>
+                  <button
+                    onClick={() => scrollToSection('about')}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    Charity Commission (1198242)
+                  </button>
+                  <button
+                    onClick={() => scrollToSection('about')}
+                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
+                  >
+                    Contact & Field Offices
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </nav>
 
-        {/* Single Primary CTA */}
-        <div className="flex items-center gap-4">
+        {/* RIGHT SIDE: SEARCH, ACCOUNT, THEME SELECTOR, STICKY DONATE NOW */}
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
+          
+          {/* Search Button */}
           <button
-            id="header-donate-btn"
-            onClick={onOpenDonate}
-            className="px-5 py-2.5 rounded-full bg-[#0F3D2E] text-[#FBFBF9] text-[13px] font-semibold tracking-wider hover:bg-[#0A2C21] active:scale-[0.98] transition-all shadow-[0_2px_8px_rgba(15,61,46,0.18)] cursor-pointer whitespace-nowrap"
+            onClick={onOpenSearch}
+            className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-[#3B4A41] hover:text-brand-primary hover:bg-[#F3EFE8] transition-colors cursor-pointer"
+            aria-label="Search appeals"
+            title="Search causes and appeals"
           >
-            DONATE NOW
+            <Search size={16} />
+            <span className="hidden lg:inline text-[13px] font-medium">Search</span>
           </button>
 
-          {/* Mobile hamburger */}
+          {/* Account / Donor Portal Button */}
+          <button
+            onClick={onOpenAccount}
+            className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-[#3B4A41] hover:text-brand-primary hover:bg-[#F3EFE8] transition-colors cursor-pointer"
+            aria-label="Donor Account"
+            title="Donor portal & receipts"
+          >
+            <User size={16} />
+            <span className="hidden lg:inline text-[13px] font-medium">Account</span>
+          </button>
+
+          {/* Minimal Live Color Theme Selector Popover */}
+          <ThemeSelector />
+
+          {/* ONE PRIMARY STICKY DONATE NOW BUTTON — Dynamic theme primary color, large, high contrast, sticky */}
+          <button
+            id="header-donate-btn"
+            onClick={() => onOpenDonate('where-needed')}
+            className="px-5 sm:px-6 py-2.5 rounded-xl bg-brand-primary text-white text-[13px] sm:text-[14px] font-semibold tracking-wide hover:bg-brand-hover active:scale-[0.98] transition-all shadow-brand-sm cursor-pointer whitespace-nowrap ml-1"
+          >
+            Donate Now →
+          </button>
+
+          {/* Mobile Menu Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-[#37453E] hover:text-[#0F3D2E] focus:outline-none"
+            className="md:hidden p-2 text-[#37453E] hover:text-brand-primary focus:outline-none ml-1"
             aria-label="Toggle navigation menu"
             id="mobile-menu-toggle"
           >
@@ -108,36 +574,172 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDonate }) => {
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
+      {/* MOBILE EXPANDABLE MENU */}
       {mobileMenuOpen && (
         <div
           id="mobile-dropdown"
-          className="md:hidden bg-[#FBFBF9] border-b border-[#E8E5DC] px-6 py-6 space-y-4 shadow-lg animate-in fade-in slide-in-from-top-2 duration-200"
+          className="md:hidden bg-[#FDFCFB] border-b border-[#E8E5DC] px-5 py-5 space-y-3 shadow-xl max-h-[85vh] overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200"
         >
-          <button
-            onClick={() => scrollToSection('causes')}
-            className="block w-full text-left py-2 text-base font-medium text-[#2C3831]"
-          >
-            Causes
-          </button>
-          <button
-            onClick={() => scrollToSection('story')}
-            className="block w-full text-left py-2 text-base font-medium text-[#2C3831]"
-          >
-            Our Work
-          </button>
-          <button
-            onClick={() => scrollToSection('impact')}
-            className="block w-full text-left py-2 text-base font-medium text-[#2C3831]"
-          >
-            Impact
-          </button>
-          <button
-            onClick={() => scrollToSection('about')}
-            className="block w-full text-left py-2 text-base font-medium text-[#2C3831]"
-          >
-            About
-          </button>
+          {/* Quick Actions in Mobile */}
+          <div className="grid grid-cols-2 gap-2 pb-3 border-b border-[#ECE8DF]">
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onOpenSearch();
+              }}
+              className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-[#F5F2EC] text-xs font-medium text-[#2E3C33]"
+            >
+              <Search size={14} />
+              <span>Search Appeals</span>
+            </button>
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onOpenAccount();
+              }}
+              className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-[#F5F2EC] text-xs font-medium text-[#2E3C33]"
+            >
+              <User size={14} />
+              <span>Donor Portal</span>
+            </button>
+          </div>
+
+          {/* Theme Selection in Mobile Menu */}
+          <div className="flex items-center justify-between py-1.5 px-3 rounded-lg bg-[#F5F2EC]">
+            <span className="text-xs font-medium text-[#2E3C33]">Visual Theme</span>
+            <ThemeSelector />
+          </div>
+
+          {/* Causes Accordion */}
+          <div>
+            <button
+              onClick={() =>
+                setMobileExpandedSection(
+                  mobileExpandedSection === 'causes' ? null : 'causes'
+                )
+              }
+              className="flex items-center justify-between w-full py-2 text-base font-semibold text-[#18261E]"
+            >
+              <span>Causes</span>
+              <ChevronRight
+                size={16}
+                className={`transition-transform duration-200 ${
+                  mobileExpandedSection === 'causes' ? 'rotate-90 text-brand-primary' : 'text-[#84948A]'
+                }`}
+              />
+            </button>
+            {mobileExpandedSection === 'causes' && (
+              <div className="pl-3 py-1 space-y-2 text-sm border-l-2 border-brand-primary/30 my-1">
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenDonate('where-needed');
+                  }}
+                  className="block w-full text-left py-1 text-brand-primary font-medium"
+                >
+                  Where Most Needed
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenDonate('where-needed');
+                  }}
+                  className="block w-full text-left py-1 text-[#425248]"
+                >
+                  Sudan Emergency Appeal
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenDonate('where-needed');
+                  }}
+                  className="block w-full text-left py-1 text-[#425248]"
+                >
+                  Gaza Relief
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenDonate('water');
+                  }}
+                  className="block w-full text-left py-1 text-[#425248]"
+                >
+                  Clean Water & Wells
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenDonate('food');
+                  }}
+                  className="block w-full text-left py-1 text-[#425248]"
+                >
+                  Food Aid & Hot Meals
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenDonate('orphans');
+                  }}
+                  className="block w-full text-left py-1 text-[#425248]"
+                >
+                  Orphan Support
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenDonate('ramadan');
+                  }}
+                  className="block w-full text-left py-1 text-[#425248]"
+                >
+                  Ramadan Giving & 100% Zakat
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Our Work */}
+          <div>
+            <button
+              onClick={() => scrollToSection('story')}
+              className="block w-full text-left py-2 text-base font-semibold text-[#18261E]"
+            >
+              Our Work
+            </button>
+          </div>
+
+          {/* Impact */}
+          <div>
+            <button
+              onClick={() => scrollToSection('impact')}
+              className="block w-full text-left py-2 text-base font-semibold text-[#18261E]"
+            >
+              Impact & Transparency
+            </button>
+          </div>
+
+          {/* About */}
+          <div>
+            <button
+              onClick={() => scrollToSection('about')}
+              className="block w-full text-left py-2 text-base font-semibold text-[#18261E]"
+            >
+              About Chatha Foundation
+            </button>
+          </div>
+
+          {/* Mobile Donate Now Button */}
+          <div className="pt-2">
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onOpenDonate('where-needed');
+              }}
+              className="w-full py-3 rounded-xl bg-brand-primary hover:bg-brand-hover text-white text-sm font-semibold tracking-wide shadow-md flex items-center justify-center gap-2 transition-colors"
+            >
+              <span>Donate Now</span>
+              <ChevronRight size={16} />
+            </button>
+          </div>
         </div>
       )}
     </header>

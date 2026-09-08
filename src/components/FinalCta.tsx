@@ -36,8 +36,8 @@ export const FinalCta: React.FC<FinalCtaProps> = ({ onOpenDonate }) => {
           {/* Right: Large Emotional Statement + Donate Now */}
           <div className="lg:col-span-6 order-1 lg:order-2 space-y-6">
             <div className="inline-flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#0F3D2E]" />
-              <span className="text-[12px] font-bold tracking-[0.2em] text-[#0F3D2E] uppercase">
+              <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
+              <span className="text-[12px] font-bold tracking-[0.2em] text-brand-primary uppercase">
                 Chatha Foundation · Humanity & Hope
               </span>
             </div>
@@ -54,7 +54,7 @@ export const FinalCta: React.FC<FinalCtaProps> = ({ onOpenDonate }) => {
               <button
                 id="final-cta-donate-btn"
                 onClick={onOpenDonate}
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#0F3D2E] text-[#FBFBF9] text-[15px] font-semibold tracking-wide hover:bg-[#0A2C21] active:scale-[0.98] transition-all shadow-[0_4px_16px_rgba(15,61,46,0.22)] cursor-pointer group"
+                className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-brand-primary text-[#FBFBF9] text-[15px] font-semibold tracking-wide hover:bg-brand-hover active:scale-[0.98] transition-all shadow-brand cursor-pointer group"
               >
                 <span>DONATE NOW</span>
                 <ArrowRight
