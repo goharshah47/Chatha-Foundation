@@ -6,16 +6,20 @@ interface DonationModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialCause?: CauseId;
+  customCauseLabel?: string;
+  initialAmount?: number;
 }
 
 const PRESET_AMOUNTS = [25, 50, 100];
 
 const CAUSES_OPTIONS: { id: CauseId; label: string }[] = [
-  { id: 'water', label: 'Water' },
-  { id: 'food', label: 'Food' },
-  { id: 'orphans', label: 'Orphans' },
+  { id: 'water', label: 'Water Aid' },
+  { id: 'food', label: 'Food Aid' },
+  { id: 'orphans', label: 'Orphan Aid' },
   { id: 'family', label: 'Family Support' },
   { id: 'ramadan', label: 'Ramadan' },
+  { id: 'qurban', label: 'Qurban' },
+  { id: 'donor-projects', label: 'Donor Projects' },
   { id: 'where-needed', label: 'Where Needed Most' },
 ];
 
@@ -23,12 +27,15 @@ export const DonationModal: React.FC<DonationModalProps> = ({
   isOpen,
   onClose,
   initialCause = 'where-needed',
+  customCauseLabel,
+  initialAmount,
 }) => {
   const [frequency, setFrequency] = useState<DonationFrequency>('one-time');
   const [selectedAmount, setSelectedAmount] = useState<number>(50);
   const [isCustom, setIsCustom] = useState<boolean>(false);
   const [customAmountInput, setCustomAmountInput] = useState<string>('75');
   const [selectedCause, setSelectedCause] = useState<CauseId>(initialCause);
+  const [activeCustomLabel, setActiveCustomLabel] = useState<string | undefined>(customCauseLabel);
   const [step, setStep] = useState<'select' | 'details' | 'success'>('select');
 
   // Form details
@@ -37,12 +44,26 @@ export const DonationModal: React.FC<DonationModalProps> = ({
   const [giftAid, setGiftAid] = useState(true);
   const [receiptNumber, setReceiptNumber] = useState('');
 
-  // Sync initial cause when opened
+  // Sync initial cause & label when opened
   useEffect(() => {
     if (initialCause) {
       setSelectedCause(initialCause);
     }
-  }, [initialCause]);
+    if (customCauseLabel) {
+      setActiveCustomLabel(customCauseLabel);
+    } else {
+      setActiveCustomLabel(undefined);
+    }
+    if (initialAmount) {
+      if (PRESET_AMOUNTS.includes(initialAmount)) {
+        setSelectedAmount(initialAmount);
+        setIsCustom(false);
+      } else {
+        setIsCustom(true);
+        setCustomAmountInput(String(initialAmount));
+      }
+    }
+  }, [initialCause, customCauseLabel, initialAmount, isOpen]);
 
   // Reset when modal opens/closes
   useEffect(() => {
@@ -77,6 +98,21 @@ export const DonationModal: React.FC<DonationModalProps> = ({
       if (amount < 35) return 'Provides warm, wholesome Iftar meals to fasting families living in acute hardship.';
       if (amount <= 75) return 'Supplies a full Ramadan food pack with dates, grains, and oil for the entire month.';
       return 'Provides community Iftar distributions and Eid gifts to children in refugee settlements.';
+    }
+    if (cause === 'qurban') {
+      if (amount < 50) return 'Contributes toward fresh Qurbani meat parcels distributed to needy families on Eid.';
+      if (amount <= 100) return 'Sponsors a full goat/sheep Qurban feeding 6–8 impoverished households.';
+      return 'Contributes significantly toward collective cattle Qurban providing fresh meat across a whole village.';
+    }
+    if (cause === 'donor-projects') {
+      if (amount < 50) return 'Supports community project survey, water testing, and architectural planning.';
+      if (amount <= 150) return 'Funds essential building materials, solar arrays, or medical camp supplies.';
+      return 'Contributes directly to major infrastructure milestones (water towers, classrooms, or community mosques).';
+    }
+    if (cause === 'family') {
+      if (amount < 35) return 'Provides warm winter blankets and essential hygiene products for a family.';
+      if (amount <= 75) return 'Provides an urgent living stipend and medicine for a vulnerable widow-headed household.';
+      return 'Funds emergency shelter repairs, weatherproofing, or critical surgical care.';
     }
     // Default / Where needed most
     if (amount <= 25) return 'Delivers immediate life-saving food, clean water, or emergency medical aid.';
@@ -236,17 +272,45 @@ export const DonationModal: React.FC<DonationModalProps> = ({
 
               {/* Cause Selection */}
               <div className="space-y-2">
-                <label className="block text-xs font-semibold tracking-wider text-[#47554D] uppercase">
-                  Choose a Cause
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-semibold tracking-wider text-[#47554D] uppercase">
+                    Designated Cause
+                  </label>
+                  {activeCustomLabel && (
+                    <button
+                      type="button"
+                      onClick={() => setActiveCustomLabel(undefined)}
+                      className="text-[11px] text-brand-primary hover:underline cursor-pointer"
+                    >
+                      Change cause
+                    </button>
+                  )}
+                </div>
+
+                {/* Preselected Opportunity Banner if clicked from a subpage */}
+                {activeCustomLabel && (
+                  <div className="p-3 rounded-xl bg-brand-light border border-brand-primary/20 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 text-xs font-medium text-brand-primary truncate">
+                      <Check size={14} className="shrink-0" />
+                      <span className="truncate">{activeCustomLabel}</span>
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-brand-primary/70 shrink-0">
+                      Preselected
+                    </span>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {CAUSES_OPTIONS.map((c) => {
                     const isSelected = selectedCause === c.id;
                     return (
                       <button
                         key={c.id}
                         type="button"
-                        onClick={() => setSelectedCause(c.id)}
+                        onClick={() => {
+                          setSelectedCause(c.id);
+                          setActiveCustomLabel(undefined);
+                        }}
                         className={`p-2.5 text-left rounded-xl text-xs font-medium border transition-all cursor-pointer truncate ${
                           isSelected
                             ? 'bg-brand-light border-brand-primary text-brand-primary font-semibold'
@@ -291,7 +355,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
               <div className="text-xs text-[#526258] pb-1">
                 Completing your <span className="font-semibold text-[#14231B]">£{activeAmount}</span> {frequency} gift for{' '}
                 <span className="font-semibold text-[#14231B]">
-                  {CAUSES_OPTIONS.find((c) => c.id === selectedCause)?.label}
+                  {activeCustomLabel || CAUSES_OPTIONS.find((c) => c.id === selectedCause)?.label}
                 </span>.
               </div>
 
@@ -373,7 +437,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                 <p className="text-sm text-[#556358] max-w-sm mx-auto leading-relaxed">
                   Your gift of <span className="font-semibold text-[#14231B]">£{activeAmount}</span> for{' '}
                   <span className="font-semibold text-[#14231B]">
-                    {CAUSES_OPTIONS.find((c) => c.id === selectedCause)?.label}
+                    {activeCustomLabel || CAUSES_OPTIONS.find((c) => c.id === selectedCause)?.label}
                   </span>{' '}
                   is already being routed to deliver immediate relief.
                 </p>

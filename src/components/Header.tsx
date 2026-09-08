@@ -13,19 +13,24 @@ import {
   Activity,
   AlertCircle
 } from 'lucide-react';
-import { CauseId } from '../types';
+import { CauseId, CauseSlug } from '../types';
+import { MAIN_CAUSES_NAV_LIST } from '../data/causesData';
 import { ThemeSelector } from './ThemeSelector';
 
 interface HeaderProps {
-  onOpenDonate: (causeId?: CauseId) => void;
+  onOpenDonate: (causeId?: CauseId, customLabel?: string) => void;
   onOpenSearch: () => void;
   onOpenAccount: () => void;
+  onNavigateCause?: (slug: CauseSlug) => void;
+  onNavigateHome?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   onOpenDonate,
   onOpenSearch,
-  onOpenAccount
+  onOpenAccount,
+  onNavigateCause,
+  onNavigateHome,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -95,7 +100,11 @@ export const Header: React.FC<HeaderProps> = ({
           className="group flex items-center gap-2.5 sm:gap-3 focus:outline-none"
           onClick={(e) => {
             e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (onNavigateHome) {
+              onNavigateHome();
+            } else {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
           }}
           id="logo-link"
           aria-label="Chatha Foundation Home"
@@ -135,222 +144,50 @@ export const Header: React.FC<HeaderProps> = ({
                 className="absolute top-full left-0 pt-2 z-50 animate-in fade-in slide-in-from-top-1.5 duration-200"
                 onMouseEnter={() => handleMouseEnterNav('causes')}
               >
-                {/* Bridge to prevent gap closing */}
-                <div className="w-[230px] rounded-xl bg-[#FDFCFB] border border-[#EAE5DC] shadow-[0_14px_36px_rgba(20,35,27,0.09)] py-1.5 overflow-visible">
-                  
-                  {/* Where Most Needed */}
-                  <button
-                    onClick={() => {
-                      onOpenDonate('where-needed');
-                      setActiveDropdown(null);
-                    }}
-                    className="w-full px-4 py-2.5 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors flex items-center justify-between"
-                  >
-                    <span>Where Most Needed</span>
+                {/* Clean, compact Main Causes list matching requirement */}
+                <div className="w-[260px] rounded-2xl bg-[#FDFCFB] border border-[#EAE5DC] shadow-[0_16px_40px_rgba(20,35,27,0.12)] p-2 overflow-hidden">
+                  <div className="px-3 pt-1.5 pb-2 text-[11px] font-bold tracking-[0.16em] text-[#718076] uppercase flex items-center justify-between border-b border-[#F0EBE2] mb-1">
+                    <span>Main Causes</span>
                     <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
-                  </button>
-
-                  {/* Appeals (with multi-level adjacent submenu) */}
-                  <div
-                    className="relative group/sub"
-                    onMouseEnter={() => handleMouseEnterSubmenu('appeals')}
-                    onMouseLeave={() => setActiveSubmenu(null)}
-                  >
-                    <button
-                      className="w-full px-4 py-2.5 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors flex items-center justify-between"
-                      id="nav-sub-appeals"
-                    >
-                      <span>Appeals</span>
-                      <ChevronRight size={14} className="text-[#7A8A80]" />
-                    </button>
-
-                    {/* Small adjacent submenu for Appeals */}
-                    {activeSubmenu === 'appeals' && (
-                      <div
-                        className="absolute left-full top-0 pl-1.5 z-50 animate-in fade-in slide-in-from-left-1 duration-150"
-                        onMouseEnter={() => handleMouseEnterSubmenu('appeals')}
-                      >
-                        <div className="w-[215px] rounded-xl bg-[#FDFCFB] border border-[#EAE5DC] shadow-[0_14px_36px_rgba(20,35,27,0.09)] py-1.5">
-                          <button
-                            onClick={() => {
-                              onOpenDonate('where-needed');
-                              setActiveDropdown(null);
-                            }}
-                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors flex items-center justify-between"
-                          >
-                            <span>Sudan Emergency</span>
-                            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#DC2626]/10 text-[#DC2626]">Urgent</span>
-                          </button>
-                          <button
-                            onClick={() => {
-                              onOpenDonate('where-needed');
-                              setActiveDropdown(null);
-                            }}
-                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors flex items-center justify-between"
-                          >
-                            <span>Gaza Relief</span>
-                            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#DC2626]/10 text-[#DC2626]">Critical</span>
-                          </button>
-                          <button
-                            onClick={() => {
-                              onOpenDonate('where-needed');
-                              setActiveDropdown(null);
-                            }}
-                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
-                          >
-                            <span>Yemen Crisis</span>
-                          </button>
-                          <button
-                            onClick={() => {
-                              onOpenDonate('where-needed');
-                              setActiveDropdown(null);
-                            }}
-                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
-                          >
-                            <span>Pakistan Flood Relief</span>
-                          </button>
-                          <button
-                            onClick={() => {
-                              onOpenDonate('where-needed');
-                              setActiveDropdown(null);
-                            }}
-                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors border-t border-[#F0ECE4] mt-1 pt-1.5"
-                          >
-                            <span>Other Emergency Appeals</span>
-                          </button>
-                        </div>
-                      </div>
-                    )}
                   </div>
 
-                  {/* Religious Giving (with multi-level adjacent submenu) */}
-                  <div
-                    className="relative group/sub"
-                    onMouseEnter={() => handleMouseEnterSubmenu('religious')}
-                    onMouseLeave={() => setActiveSubmenu(null)}
-                  >
-                    <button
-                      className="w-full px-4 py-2.5 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors flex items-center justify-between"
-                      id="nav-sub-religious"
-                    >
-                      <span>Religious Giving</span>
-                      <ChevronRight size={14} className="text-[#7A8A80]" />
-                    </button>
-
-                    {/* Small adjacent submenu for Religious Giving */}
-                    {activeSubmenu === 'religious' && (
-                      <div
-                        className="absolute left-full top-0 pl-1.5 z-50 animate-in fade-in slide-in-from-left-1 duration-150"
-                        onMouseEnter={() => handleMouseEnterSubmenu('religious')}
+                  <div className="space-y-0.5">
+                    {MAIN_CAUSES_NAV_LIST.map((cause) => (
+                      <button
+                        key={cause.slug}
+                        onClick={() => {
+                          setActiveDropdown(null);
+                          if (onNavigateCause) {
+                            onNavigateCause(cause.slug);
+                          }
+                        }}
+                        className="w-full px-3 py-2 text-left rounded-xl text-[13.5px] font-medium text-[#25342B] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors flex items-center justify-between group/item cursor-pointer"
+                        id={`nav-cause-${cause.slug}`}
                       >
-                        <div className="w-[215px] rounded-xl bg-[#FDFCFB] border border-[#EAE5DC] shadow-[0_14px_36px_rgba(20,35,27,0.09)] py-1.5">
-                          <button
-                            onClick={() => {
-                              onOpenDonate('where-needed');
-                              setActiveDropdown(null);
-                            }}
-                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
-                          >
-                            <span>100% Zakat Policy</span>
-                          </button>
-                          <button
-                            onClick={() => {
-                              onOpenDonate('water');
-                              setActiveDropdown(null);
-                            }}
-                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
-                          >
-                            <span>Sadaqah Jariyah</span>
-                          </button>
-                          <button
-                            onClick={() => {
-                              onOpenDonate('food');
-                              setActiveDropdown(null);
-                            }}
-                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
-                          >
-                            <span>Fidya & Kaffarah</span>
-                          </button>
-                          <button
-                            onClick={() => {
-                              onOpenDonate('food');
-                              setActiveDropdown(null);
-                            }}
-                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
-                          >
-                            <span>Qurbani / Udhiyah</span>
-                          </button>
-                          <button
-                            onClick={() => {
-                              onOpenDonate('ramadan');
-                              setActiveDropdown(null);
-                            }}
-                            className="w-full px-4 py-2 text-left text-[13px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors border-t border-[#F0ECE4] mt-1 pt-1.5 text-brand-primary font-semibold"
-                          >
-                            <span>Ramadan Giving</span>
-                          </button>
+                        <div className="flex flex-col text-left">
+                          <span className="font-semibold text-[13.5px] leading-tight">{cause.name}</span>
+                          <span className="text-[11px] text-[#798A80] group-hover/item:text-brand-primary/80 transition-colors">
+                            {cause.desc}
+                          </span>
                         </div>
-                      </div>
-                    )}
+                        <ChevronRight size={13} className="text-[#98A89F] group-hover/item:translate-x-0.5 group-hover/item:text-brand-primary transition-all shrink-0 ml-2" />
+                      </button>
+                    ))}
                   </div>
 
-                  <div className="my-1 border-t border-[#F0ECE4]" />
-
-                  {/* Food / Hot Meals */}
-                  <button
-                    onClick={() => {
-                      onOpenDonate('food');
-                      setActiveDropdown(null);
-                    }}
-                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
-                  >
-                    Food / Hot Meals
-                  </button>
-
-                  {/* Clean Water */}
-                  <button
-                    onClick={() => {
-                      onOpenDonate('water');
-                      setActiveDropdown(null);
-                    }}
-                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
-                  >
-                    Clean Water
-                  </button>
-
-                  {/* Orphan Care */}
-                  <button
-                    onClick={() => {
-                      onOpenDonate('orphans');
-                      setActiveDropdown(null);
-                    }}
-                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
-                  >
-                    Orphan Care
-                  </button>
-
-                  {/* Medical / Health */}
-                  <button
-                    onClick={() => {
-                      onOpenDonate('family');
-                      setActiveDropdown(null);
-                    }}
-                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
-                  >
-                    Medical / Health
-                  </button>
-
-                  {/* Family Support */}
-                  <button
-                    onClick={() => {
-                      onOpenDonate('family');
-                      setActiveDropdown(null);
-                    }}
-                    className="w-full px-4 py-2 text-left text-[13.5px] font-medium text-[#2C3B32] hover:text-brand-primary hover:bg-[#F4F0E8] transition-colors"
-                  >
-                    Family Support
-                  </button>
-
+                  <div className="mt-1 pt-1.5 border-t border-[#ECE7DE]">
+                    <button
+                      onClick={() => {
+                        setActiveDropdown(null);
+                        if (onNavigateHome) onNavigateHome();
+                        scrollToSection('causes');
+                      }}
+                      className="w-full px-3 py-1.5 text-left text-xs font-semibold text-brand-primary hover:bg-[#F4F0E8] rounded-lg transition-colors flex items-center justify-between cursor-pointer"
+                    >
+                      <span>Explore all causes overview</span>
+                      <ChevronRight size={12} />
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -629,69 +466,30 @@ export const Header: React.FC<HeaderProps> = ({
               />
             </button>
             {mobileExpandedSection === 'causes' && (
-              <div className="pl-3 py-1 space-y-2 text-sm border-l-2 border-brand-primary/30 my-1">
+              <div className="pl-3 py-1 space-y-1.5 text-sm border-l-2 border-brand-primary/30 my-1">
+                {MAIN_CAUSES_NAV_LIST.map((cause) => (
+                  <button
+                    key={cause.slug}
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      if (onNavigateCause) {
+                        onNavigateCause(cause.slug);
+                      }
+                    }}
+                    className="block w-full text-left py-1 text-[#334339] hover:text-brand-primary font-medium cursor-pointer"
+                  >
+                    <span>{cause.name}</span>
+                  </button>
+                ))}
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
-                    onOpenDonate('where-needed');
+                    if (onNavigateHome) onNavigateHome();
+                    scrollToSection('causes');
                   }}
-                  className="block w-full text-left py-1 text-brand-primary font-medium"
+                  className="block w-full text-left py-1 text-xs text-brand-primary font-semibold pt-1 border-t border-[#EAE5DC]"
                 >
-                  Where Most Needed
-                </button>
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    onOpenDonate('where-needed');
-                  }}
-                  className="block w-full text-left py-1 text-[#425248]"
-                >
-                  Sudan Emergency Appeal
-                </button>
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    onOpenDonate('where-needed');
-                  }}
-                  className="block w-full text-left py-1 text-[#425248]"
-                >
-                  Gaza Relief
-                </button>
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    onOpenDonate('water');
-                  }}
-                  className="block w-full text-left py-1 text-[#425248]"
-                >
-                  Clean Water & Wells
-                </button>
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    onOpenDonate('food');
-                  }}
-                  className="block w-full text-left py-1 text-[#425248]"
-                >
-                  Food Aid & Hot Meals
-                </button>
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    onOpenDonate('orphans');
-                  }}
-                  className="block w-full text-left py-1 text-[#425248]"
-                >
-                  Orphan Support
-                </button>
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    onOpenDonate('ramadan');
-                  }}
-                  className="block w-full text-left py-1 text-[#425248]"
-                >
-                  Ramadan Giving & 100% Zakat
+                  View All Causes Overview →
                 </button>
               </div>
             )}

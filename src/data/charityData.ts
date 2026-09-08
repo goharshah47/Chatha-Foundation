@@ -143,6 +143,30 @@ export const CAUSES_LIST: CauseItem[] = [
     ],
     imageAlt: 'Ramadan meal sharing with dates and wholesome food',
     exampleMetric: '100% verified Zakat policy'
+  },
+  {
+    id: 'qurban',
+    name: 'Qurban',
+    shortDesc: 'Sacred Eid al-Adha sacrifice distributions delivering fresh, dignified meat parcels to millions living in deep poverty.',
+    imageUrl: 'https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&w=1000&q=80',
+    fallbackUrls: [
+      'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=1000&q=80'
+    ],
+    imageAlt: 'Healthy livestock cared for humanely for sacrificial Eid distribution',
+    exampleMetric: '65,000+ meat parcels shared'
+  },
+  {
+    id: 'donor-projects',
+    name: 'Donor Projects',
+    shortDesc: 'Bespoke infrastructure partnerships including solar wells, schools, clinics, and community mosques with naming plaques and field reports.',
+    imageUrl: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1000&q=80',
+    fallbackUrls: [
+      'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&w=1000&q=80'
+    ],
+    imageAlt: 'Community classroom built through dedicated donor project support',
+    exampleMetric: '120+ custom builds completed'
   }
 ];
 

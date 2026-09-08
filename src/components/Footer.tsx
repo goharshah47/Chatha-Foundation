@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { ArrowRight, Check } from 'lucide-react';
+import { CauseSlug } from '../types';
+import { MAIN_CAUSES_NAV_LIST } from '../data/causesData';
 
 interface FooterProps {
   onOpenDonate: () => void;
+  onNavigateCause?: (slug: CauseSlug) => void;
+  onNavigateHome?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenDonate }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onNavigateCause, onNavigateHome }) => {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -16,12 +20,15 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate }) => {
   };
 
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const yOffset = -72;
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }
+    if (onNavigateHome) onNavigateHome();
+    setTimeout(() => {
+      const element = document.getElementById(id);
+      if (element) {
+        const yOffset = -72;
+        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }, 50);
   };
 
   return (
@@ -35,7 +42,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate }) => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-16">
           
           {/* Brand Column */}
-          <div className="md:col-span-5 space-y-4">
+          <div className="md:col-span-4 space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-2.5 h-2.5 rounded-full bg-brand-primary" />
               <span className="font-semibold text-xl tracking-tight text-[#14231B]">
@@ -53,26 +60,42 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate }) => {
             </div>
           </div>
 
-          {/* Minimal Navigation Columns */}
+          {/* Causes Column */}
           <div className="md:col-span-3 space-y-3">
+            <div className="text-xs font-semibold tracking-wider text-brand-primary uppercase">
+              Main Causes
+            </div>
+            <ul className="space-y-2 text-sm text-[#46544B]">
+              {MAIN_CAUSES_NAV_LIST.map((cause) => (
+                <li key={cause.slug}>
+                  <button
+                    onClick={() => {
+                      if (onNavigateCause) {
+                        onNavigateCause(cause.slug);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }
+                    }}
+                    className="hover:text-brand-primary transition-colors cursor-pointer text-left"
+                  >
+                    {cause.name}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Minimal Navigation Columns */}
+          <div className="md:col-span-2 space-y-3">
             <div className="text-xs font-semibold tracking-wider text-brand-primary uppercase">
               Explore
             </div>
-            <ul className="space-y-2.5 text-sm text-[#46544B]">
+            <ul className="space-y-2 text-sm text-[#46544B]">
               <li>
                 <button
                   onClick={() => scrollToSection('hero')}
                   className="hover:text-brand-primary transition-colors cursor-pointer"
                 >
-                  Featured Campaigns
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection('causes')}
-                  className="hover:text-brand-primary transition-colors cursor-pointer"
-                >
-                  Causes & Programs
+                  Campaigns
                 </button>
               </li>
               <li>
@@ -96,14 +119,14 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate }) => {
                   onClick={onOpenDonate}
                   className="font-medium text-brand-primary hover:underline cursor-pointer"
                 >
-                  Donate to a Cause
+                  Donate Now
                 </button>
               </li>
             </ul>
           </div>
 
           {/* Field Dispatches Newsletter Column */}
-          <div className="md:col-span-4 space-y-3">
+          <div className="md:col-span-3 space-y-3">
             <div className="text-xs font-semibold tracking-wider text-brand-primary uppercase">
               Field Dispatches
             </div>
