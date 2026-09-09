@@ -10,15 +10,15 @@ export const FinalCta: React.FC<FinalCtaProps> = ({ onOpenDonate }) => {
   return (
     <section
       id="final-cta"
-      className="py-16 sm:py-24 border-t border-[#ECE8E0] bg-[#FBFBF9]"
+      className="py-12 sm:py-20 lg:py-24 border-t border-[#ECE8E0] bg-[#FBFBF9]"
       aria-label="Call to Action"
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
           
           {/* Left: One Powerful Documentary Photograph */}
           <div className="lg:col-span-6 order-2 lg:order-1">
-            <div className="relative h-[320px] sm:h-[400px] lg:h-[460px] rounded-[22px] overflow-hidden bg-[#ECE8E0] shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-[#E7E3D8]">
+            <div className="relative h-[260px] xs:h-[300px] sm:h-[400px] lg:h-[460px] rounded-2xl sm:rounded-[22px] overflow-hidden bg-[#ECE8E0] shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-[#E7E3D8]">
               <CharityImage
                 src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&w=1600&q=85"
                 fallbackUrls={[
@@ -34,19 +34,19 @@ export const FinalCta: React.FC<FinalCtaProps> = ({ onOpenDonate }) => {
           </div>
 
           {/* Right: Large Emotional Statement + Donate Now */}
-          <div className="lg:col-span-6 order-1 lg:order-2 space-y-6">
+          <div className="lg:col-span-6 order-1 lg:order-2 space-y-4 sm:space-y-6">
             <div className="inline-flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
-              <span className="text-[12px] font-bold tracking-[0.2em] text-brand-primary uppercase">
+              <span className="text-[11px] sm:text-[12px] font-bold tracking-[0.2em] text-brand-primary uppercase">
                 Chatha Foundation · Humanity & Hope
               </span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-[46px] leading-[1.14] font-medium tracking-tight text-[#14231B]">
+            <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-[46px] leading-[1.14] font-medium tracking-tight text-[#14231B]">
               Together, we can make a difference.
             </h2>
 
-            <p className="text-[#516056] text-base sm:text-lg leading-relaxed font-normal">
+            <p className="text-[#516056] text-[15px] sm:text-base lg:text-lg leading-relaxed font-normal">
               A single moment of generosity delivers clean water to a drought-stricken village, meals to hungry children, and dignity to displaced families.
             </p>
 
@@ -54,7 +54,7 @@ export const FinalCta: React.FC<FinalCtaProps> = ({ onOpenDonate }) => {
               <button
                 id="final-cta-donate-btn"
                 onClick={onOpenDonate}
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-brand-primary text-[#FBFBF9] text-[15px] font-semibold tracking-wide hover:bg-brand-hover active:scale-[0.98] transition-all shadow-brand cursor-pointer group"
+                className="min-h-[48px] w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-3.5 sm:py-4 rounded-xl sm:rounded-full bg-brand-primary text-[#FBFBF9] text-[15px] font-semibold tracking-wide hover:bg-brand-hover active:scale-[0.98] transition-all shadow-brand cursor-pointer group"
               >
                 <span>DONATE NOW</span>
                 <ArrowRight

@@ -11,11 +11,13 @@ import {
   BookOpen,
   Home,
   Activity,
-  AlertCircle
+  AlertCircle,
+  ArrowRight
 } from 'lucide-react';
 import { CauseId, CauseSlug } from '../types';
 import { MAIN_CAUSES_NAV_LIST } from '../data/causesData';
 import { ThemeSelector } from './ThemeSelector';
+import { ViewSwitcher } from './ViewSwitcher';
 
 interface HeaderProps {
   onOpenDonate: (causeId?: CauseId, customLabel?: string) => void;
@@ -23,6 +25,7 @@ interface HeaderProps {
   onOpenAccount: () => void;
   onNavigateCause?: (slug: CauseSlug) => void;
   onNavigateHome?: () => void;
+  currentCauseSlug?: CauseSlug | null;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -31,6 +34,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAccount,
   onNavigateCause,
   onNavigateHome,
+  currentCauseSlug,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -40,13 +44,19 @@ export const Header: React.FC<HeaderProps> = ({
   const [activeDropdown, setActiveDropdown] = useState<'causes' | 'our-work' | 'impact' | 'about' | null>(null);
   const [activeSubmenu, setActiveSubmenu] = useState<'appeals' | 'religious' | null>(null);
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
+    const currentDoc = headerRef.current?.ownerDocument || document;
+    const currentWin = currentDoc.defaultView || window;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const scrollY = currentWin.scrollY || currentDoc.documentElement?.scrollTop || 0;
+      setIsScrolled(scrollY > 20);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    currentWin.addEventListener('scroll', handleScroll);
+    return () => currentWin.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleMouseEnterNav = (menu: 'causes' | 'our-work' | 'impact' | 'about') => {
@@ -75,16 +85,16 @@ export const Header: React.FC<HeaderProps> = ({
   const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
     setActiveDropdown(null);
-    const element = document.getElementById(id);
+    const currentDoc = headerRef.current?.ownerDocument || document;
+    const element = currentDoc.getElementById(id) || document.getElementById(id);
     if (element) {
-      const yOffset = -72;
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+      element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   return (
     <header
+      ref={headerRef}
       id="site-header"
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         isScrolled
@@ -362,13 +372,13 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </nav>
 
-        {/* RIGHT SIDE: SEARCH, ACCOUNT, THEME SELECTOR, STICKY DONATE NOW */}
+        {/* RIGHT SIDE: SEARCH, ACCOUNT, THEME SELECTOR (DESKTOP) + STICKY DONATE NOW & MOBILE MENU */}
         <div className="flex items-center gap-1.5 sm:gap-2.5">
           
-          {/* Search Button */}
+          {/* Desktop-only Search Button */}
           <button
             onClick={onOpenSearch}
-            className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-[#3B4A41] hover:text-brand-primary hover:bg-[#F3EFE8] transition-colors cursor-pointer"
+            className="hidden md:flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-[#3B4A41] hover:text-brand-primary hover:bg-[#F3EFE8] transition-colors cursor-pointer"
             aria-label="Search appeals"
             title="Search causes and appeals"
           >
@@ -376,10 +386,10 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="hidden lg:inline text-[13px] font-medium">Search</span>
           </button>
 
-          {/* Account / Donor Portal Button */}
+          {/* Desktop-only Account / Donor Portal Button */}
           <button
             onClick={onOpenAccount}
-            className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-[#3B4A41] hover:text-brand-primary hover:bg-[#F3EFE8] transition-colors cursor-pointer"
+            className="hidden md:flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-[#3B4A41] hover:text-brand-primary hover:bg-[#F3EFE8] transition-colors cursor-pointer"
             aria-label="Donor Account"
             title="Donor portal & receipts"
           >
@@ -387,46 +397,56 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="hidden lg:inline text-[13px] font-medium">Account</span>
           </button>
 
-          {/* Minimal Live Color Theme Selector Popover */}
-          <ThemeSelector />
+          {/* Desktop-only Minimal Live Color Theme Selector Popover */}
+          <div className="hidden md:block">
+            <ThemeSelector />
+          </div>
 
-          {/* ONE PRIMARY STICKY DONATE NOW BUTTON — Dynamic theme primary color, large, high contrast, sticky */}
+          {/* Desktop-only View Switcher (Desktop / Mobile Preview) */}
+          <div className="hidden md:block">
+            <ViewSwitcher />
+          </div>
+
+          {/* ONE PRIMARY STICKY DONATE NOW BUTTON — Accessible on both mobile & desktop */}
           <button
             id="header-donate-btn"
-            onClick={() => onOpenDonate('where-needed')}
-            className="px-5 sm:px-6 py-2.5 rounded-xl bg-brand-primary text-white text-[13px] sm:text-[14px] font-semibold tracking-wide hover:bg-brand-hover active:scale-[0.98] transition-all shadow-brand-sm cursor-pointer whitespace-nowrap ml-1"
+            onClick={() => onOpenDonate(currentCauseSlug ? (currentCauseSlug as CauseId) : 'where-needed')}
+            className="min-h-[44px] px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-brand-primary text-white text-[13px] sm:text-[14px] font-semibold tracking-wide hover:bg-brand-hover active:scale-[0.98] transition-all shadow-brand-sm cursor-pointer whitespace-nowrap flex items-center justify-center gap-1.5"
+            aria-label="Donate Now"
           >
-            Donate Now →
+            <span>Donate Now</span>
+            <span className="hidden xs:inline">→</span>
           </button>
 
-          {/* Mobile Menu Hamburger */}
+          {/* Mobile Menu Hamburger (Minimum 44px touch target) */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-[#37453E] hover:text-brand-primary focus:outline-none ml-1"
-            aria-label="Toggle navigation menu"
+            className="md:hidden min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-[#26352C] hover:text-brand-primary hover:bg-[#F3EFE8] focus:outline-none transition-colors"
+            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             id="mobile-menu-toggle"
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
 
-      {/* MOBILE EXPANDABLE MENU */}
+      {/* MOBILE FULL-WIDTH TOUCH NAVIGATION PANEL */}
       {mobileMenuOpen && (
         <div
           id="mobile-dropdown"
-          className="md:hidden bg-[#FDFCFB] border-b border-[#E8E5DC] px-5 py-5 space-y-3 shadow-xl max-h-[85vh] overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200"
+          className="md:hidden bg-[#FDFCFB] border-b border-[#E8E5DC] px-5 py-5 space-y-4 shadow-xl max-h-[85vh] overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200"
         >
-          {/* Quick Actions in Mobile */}
+          {/* Quick Search & Account Buttons */}
           <div className="grid grid-cols-2 gap-2 pb-3 border-b border-[#ECE8DF]">
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
                 onOpenSearch();
               }}
-              className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-[#F5F2EC] text-xs font-medium text-[#2E3C33]"
+              className="min-h-[44px] flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-[#F5F2EC] text-xs font-medium text-[#2E3C33] active:bg-[#ECE7DC] transition-colors"
             >
-              <Search size={14} />
+              <Search size={15} className="text-brand-primary" />
               <span>Search Appeals</span>
             </button>
             <button
@@ -434,108 +454,124 @@ export const Header: React.FC<HeaderProps> = ({
                 setMobileMenuOpen(false);
                 onOpenAccount();
               }}
-              className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-[#F5F2EC] text-xs font-medium text-[#2E3C33]"
+              className="min-h-[44px] flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-[#F5F2EC] text-xs font-medium text-[#2E3C33] active:bg-[#ECE7DC] transition-colors"
             >
-              <User size={14} />
+              <User size={15} className="text-brand-primary" />
               <span>Donor Portal</span>
             </button>
           </div>
 
-          {/* Theme Selection in Mobile Menu */}
-          <div className="flex items-center justify-between py-1.5 px-3 rounded-lg bg-[#F5F2EC]">
-            <span className="text-xs font-medium text-[#2E3C33]">Visual Theme</span>
+          {/* Visual Theme Selector (Accessible in Mobile Menu) */}
+          <div className="flex items-center justify-between py-2 px-3.5 rounded-xl bg-[#F5F2EC] border border-[#EAE5DC]">
+            <span className="text-xs font-semibold text-[#2E3C33]">Color Theme</span>
             <ThemeSelector />
           </div>
 
-          {/* Causes Accordion */}
-          <div>
-            <button
-              onClick={() =>
-                setMobileExpandedSection(
-                  mobileExpandedSection === 'causes' ? null : 'causes'
-                )
-              }
-              className="flex items-center justify-between w-full py-2 text-base font-semibold text-[#18261E]"
-            >
-              <span>Causes</span>
-              <ChevronRight
-                size={16}
-                className={`transition-transform duration-200 ${
-                  mobileExpandedSection === 'causes' ? 'rotate-90 text-brand-primary' : 'text-[#84948A]'
-                }`}
-              />
-            </button>
-            {mobileExpandedSection === 'causes' && (
-              <div className="pl-3 py-1 space-y-1.5 text-sm border-l-2 border-brand-primary/30 my-1">
-                {MAIN_CAUSES_NAV_LIST.map((cause) => (
+          {/* Navigation Links — Tap-based, Simple */}
+          <div className="space-y-1 pt-1">
+            {/* 1. Causes (Expandable Accordion) */}
+            <div className="border-b border-[#ECE8DF] pb-2">
+              <button
+                onClick={() =>
+                  setMobileExpandedSection(
+                    mobileExpandedSection === 'causes' ? null : 'causes'
+                  )
+                }
+                className="min-h-[44px] flex items-center justify-between w-full py-2 text-base font-semibold text-[#18261E] cursor-pointer"
+                aria-expanded={mobileExpandedSection === 'causes'}
+              >
+                <span>Causes</span>
+                <ChevronRight
+                  size={18}
+                  className={`transition-transform duration-200 ${
+                    mobileExpandedSection === 'causes' ? 'rotate-90 text-brand-primary' : 'text-[#84948A]'
+                  }`}
+                />
+              </button>
+              {mobileExpandedSection === 'causes' && (
+                <div className="pl-3 py-1 space-y-1 text-sm border-l-2 border-brand-primary/40 my-1 animate-in fade-in duration-150">
+                  {MAIN_CAUSES_NAV_LIST.map((cause) => (
+                    <button
+                      key={cause.slug}
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        if (onNavigateCause) {
+                          onNavigateCause(cause.slug);
+                        }
+                      }}
+                      className="min-h-[44px] flex items-center w-full text-left py-2 px-2 rounded-lg text-[#334339] active:text-brand-primary active:bg-brand-light/50 font-medium cursor-pointer"
+                    >
+                      <span>{cause.name}</span>
+                    </button>
+                  ))}
                   <button
-                    key={cause.slug}
                     onClick={() => {
                       setMobileMenuOpen(false);
-                      if (onNavigateCause) {
-                        onNavigateCause(cause.slug);
-                      }
+                      if (onNavigateHome) onNavigateHome();
+                      scrollToSection('causes');
                     }}
-                    className="block w-full text-left py-1 text-[#334339] hover:text-brand-primary font-medium cursor-pointer"
+                    className="min-h-[44px] flex items-center w-full text-left py-2 px-2 text-xs text-brand-primary font-semibold pt-1 border-t border-[#EAE5DC]"
                   >
-                    <span>{cause.name}</span>
+                    <span>View All Causes Overview →</span>
                   </button>
-                ))}
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    if (onNavigateHome) onNavigateHome();
-                    scrollToSection('causes');
-                  }}
-                  className="block w-full text-left py-1 text-xs text-brand-primary font-semibold pt-1 border-t border-[#EAE5DC]"
-                >
-                  View All Causes Overview →
-                </button>
-              </div>
-            )}
+                </div>
+              )}
+            </div>
+
+            {/* 2. Our Work */}
+            <div className="border-b border-[#ECE8DF] pb-1">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  if (onNavigateHome) onNavigateHome();
+                  scrollToSection('story');
+                }}
+                className="min-h-[44px] flex items-center w-full text-left py-2 text-base font-semibold text-[#18261E] cursor-pointer"
+              >
+                Our Work
+              </button>
+            </div>
+
+            {/* 3. Impact */}
+            <div className="border-b border-[#ECE8DF] pb-1">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  if (onNavigateHome) onNavigateHome();
+                  scrollToSection('impact');
+                }}
+                className="min-h-[44px] flex items-center w-full text-left py-2 text-base font-semibold text-[#18261E] cursor-pointer"
+              >
+                Impact
+              </button>
+            </div>
+
+            {/* 4. About */}
+            <div className="border-b border-[#ECE8DF] pb-1">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  if (onNavigateHome) onNavigateHome();
+                  scrollToSection('about');
+                }}
+                className="min-h-[44px] flex items-center w-full text-left py-2 text-base font-semibold text-[#18261E] cursor-pointer"
+              >
+                About
+              </button>
+            </div>
           </div>
 
-          {/* Our Work */}
-          <div>
-            <button
-              onClick={() => scrollToSection('story')}
-              className="block w-full text-left py-2 text-base font-semibold text-[#18261E]"
-            >
-              Our Work
-            </button>
-          </div>
-
-          {/* Impact */}
-          <div>
-            <button
-              onClick={() => scrollToSection('impact')}
-              className="block w-full text-left py-2 text-base font-semibold text-[#18261E]"
-            >
-              Impact & Transparency
-            </button>
-          </div>
-
-          {/* About */}
-          <div>
-            <button
-              onClick={() => scrollToSection('about')}
-              className="block w-full text-left py-2 text-base font-semibold text-[#18261E]"
-            >
-              About Chatha Foundation
-            </button>
-          </div>
-
-          {/* Mobile Donate Now Button */}
+          {/* Mobile Primary Donate Now Button */}
           <div className="pt-2">
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                onOpenDonate('where-needed');
+                onOpenDonate(currentCauseSlug ? (currentCauseSlug as CauseId) : 'where-needed');
               }}
-              className="w-full py-3 rounded-xl bg-brand-primary hover:bg-brand-hover text-white text-sm font-semibold tracking-wide shadow-md flex items-center justify-center gap-2 transition-colors"
+              className="min-h-[48px] w-full py-3.5 rounded-xl bg-brand-primary hover:bg-brand-hover text-white text-sm font-semibold tracking-wide shadow-md flex items-center justify-center gap-2 transition-colors active:scale-[0.99] cursor-pointer"
             >
               <span>Donate Now</span>
-              <ChevronRight size={16} />
+              <ArrowRight size={16} />
             </button>
           </div>
         </div>

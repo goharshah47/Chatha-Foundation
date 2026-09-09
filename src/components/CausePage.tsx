@@ -37,10 +37,28 @@ export const CausePage: React.FC<CausePageProps> = ({
 
       {/* 2. HUMANITARIAN HERO SECTION */}
       <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-center">
           
-          {/* Left: Emotional Typography & Prominent Single CTA */}
-          <div className="lg:col-span-6 space-y-6 sm:space-y-7">
+          {/* Mobile Order: 1. Campaign Image / Desktop: Right Column */}
+          <div className="lg:col-span-6 order-1 lg:order-2">
+            <div className="relative aspect-[4/3] xs:aspect-[16/11] sm:h-[460px] lg:h-[500px] w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-[#EAE5DC] border border-[#E4DFD3] shadow-[0_12px_36px_rgba(18,32,24,0.08)]">
+              <CharityImage
+                src={data.heroImage}
+                fallbackUrls={data.heroFallbackUrls}
+                alt={data.heroAlt}
+                className="w-full h-full object-cover object-center"
+                loading="eager"
+                categoryLabel={data.name}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute bottom-3 left-4 right-4 text-white/90 text-[11px] sm:text-xs font-medium">
+                {data.heroAlt}
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Order: 2. Cause headline, 3. Short explanation, 4. Impact statement, 5. Donate Now / Desktop: Left Column */}
+          <div className="lg:col-span-6 order-2 lg:order-1 space-y-4 sm:space-y-6">
             
             {/* Tagline */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-light border border-brand-primary/15">
@@ -50,17 +68,17 @@ export const CausePage: React.FC<CausePageProps> = ({
               </span>
             </div>
 
-            {/* Emotional Headline */}
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-[#14231B] leading-[1.18]">
+            {/* 2. Cause Headline */}
+            <h1 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-[#14231B] leading-[1.18]">
               {data.heroHeadline}
             </h1>
 
-            {/* Short Narrative Description */}
-            <p className="text-base sm:text-lg text-[#47574D] leading-relaxed font-normal max-w-xl">
+            {/* 3. Short Narrative Description */}
+            <p className="text-[15px] sm:text-lg text-[#47574D] leading-relaxed font-normal max-w-xl">
               {data.heroDescription}
             </p>
 
-            {/* Impact Statement Badge */}
+            {/* 4. Impact Statement Badge */}
             <div className="p-3.5 sm:p-4 rounded-xl bg-[#F6F2EB] border border-[#E9E4DA] flex items-start gap-3">
               <Sparkles size={18} className="text-brand-primary shrink-0 mt-0.5" />
               <p className="text-xs sm:text-sm font-medium text-[#303E35] leading-snug">
@@ -68,11 +86,11 @@ export const CausePage: React.FC<CausePageProps> = ({
               </p>
             </div>
 
-            {/* Prominent Donate Now CTA & Secondary Action */}
-            <div className="pt-2 flex flex-wrap items-center gap-4">
+            {/* 5. Prominent Donate Now CTA (Min 44px+ touch target) */}
+            <div className="pt-2 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
               <button
                 onClick={() => onOpenDonate(data.causeId, `${data.name} Relief Fund`)}
-                className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-brand-primary text-white text-sm font-semibold hover:bg-brand-hover transition-all duration-200 shadow-sm cursor-pointer"
+                className="min-h-[48px] w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl sm:rounded-full bg-brand-primary text-white text-sm font-semibold hover:bg-brand-hover active:scale-[0.98] transition-all duration-200 shadow-sm cursor-pointer"
               >
                 <span>Donate to {data.name}</span>
                 <ArrowRight size={16} />
@@ -80,31 +98,13 @@ export const CausePage: React.FC<CausePageProps> = ({
 
               <a
                 href="#giving-opportunities"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider text-[#4E5E54] hover:text-brand-primary uppercase transition-colors"
+                className="min-h-[44px] inline-flex items-center justify-center gap-1.5 text-xs font-semibold tracking-wider text-[#4E5E54] hover:text-brand-primary uppercase transition-colors"
               >
                 <span>View Opportunities</span>
                 <ChevronRight size={14} />
               </a>
             </div>
 
-          </div>
-
-          {/* Right: Authentic Large Documentary Photography */}
-          <div className="lg:col-span-6">
-            <div className="relative h-[360px] sm:h-[460px] lg:h-[500px] w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-[#EAE5DC] border border-[#E4DFD3] shadow-[0_18px_48px_rgba(18,32,24,0.08)]">
-              <CharityImage
-                src={data.heroImage}
-                fallbackUrls={data.heroFallbackUrls}
-                alt={data.heroAlt}
-                className="w-full h-full object-cover object-center"
-                loading="eager"
-                categoryLabel={data.name}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
-              <div className="absolute bottom-4 left-5 right-5 text-white/90 text-xs font-medium">
-                {data.heroAlt}
-              </div>
-            </div>
           </div>
 
         </div>
@@ -331,18 +331,18 @@ export const CausePage: React.FC<CausePageProps> = ({
                     )}
                   </div>
 
-                  {/* Actions: Read Detail + Donate Now */}
+                  {/* Actions: Read Detail + Donate Now (Min 44px touch target) */}
                   <div className="flex items-center justify-between pt-1 gap-2">
                     <button
                       onClick={() => onSelectOpportunity(opp)}
-                      className="text-xs font-semibold text-[#48584E] hover:text-brand-primary transition-colors cursor-pointer"
+                      className="min-h-[44px] inline-flex items-center py-2 text-xs font-semibold text-[#48584E] hover:text-brand-primary active:text-brand-primary transition-colors cursor-pointer"
                     >
                       Read details & impact →
                     </button>
 
                     <button
                       onClick={() => onOpenDonate(opp.causeSlug as CauseId, `${data.name}: ${opp.title}`, opp.suggestedAmount)}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-primary text-white text-xs font-semibold hover:bg-brand-hover transition-colors cursor-pointer"
+                      className="min-h-[44px] inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-brand-primary text-white text-xs font-semibold hover:bg-brand-hover active:bg-brand-hover transition-colors cursor-pointer"
                     >
                       <span>Donate</span>
                       <ArrowRight size={12} />

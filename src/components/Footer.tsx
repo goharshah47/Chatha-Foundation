@@ -34,15 +34,15 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onNavigateCause, o
   return (
     <footer
       id="about"
-      className="border-t border-[#E8E4DA] bg-[#F7F5EF] pt-16 pb-12 text-[#2A372F]"
+      className="border-t border-[#E8E4DA] bg-[#F7F5EF] pt-12 sm:pt-16 pb-10 sm:pb-12 text-[#2A372F]"
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
         
         {/* Main Footer Row */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-16">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-10 lg:gap-16">
           
           {/* Brand Column */}
-          <div className="md:col-span-4 space-y-4">
+          <div className="md:col-span-4 space-y-3 sm:space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-2.5 h-2.5 rounded-full bg-brand-primary" />
               <span className="font-semibold text-xl tracking-tight text-[#14231B]">
@@ -55,7 +55,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onNavigateCause, o
             <p className="text-sm text-[#5B6A60] leading-relaxed max-w-sm">
               An international humanitarian foundation dedicated to restoring human dignity through clean water, emergency food aid, orphan care, and community resilience.
             </p>
-            <div className="text-xs text-[#7A887E] pt-2">
+            <div className="text-xs text-[#7A887E] pt-1">
               Chatha Foundation Humanitarian Trust (No. 1198242) · Regulated by the Charity Commission.
             </div>
           </div>
@@ -65,7 +65,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onNavigateCause, o
             <div className="text-xs font-semibold tracking-wider text-brand-primary uppercase">
               Main Causes
             </div>
-            <ul className="space-y-2 text-sm text-[#46544B]">
+            <ul className="space-y-1 text-sm text-[#46544B]">
               {MAIN_CAUSES_NAV_LIST.map((cause) => (
                 <li key={cause.slug}>
                   <button
@@ -75,7 +75,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onNavigateCause, o
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }
                     }}
-                    className="hover:text-brand-primary transition-colors cursor-pointer text-left"
+                    className="min-h-[40px] flex items-center hover:text-brand-primary active:text-brand-primary transition-colors cursor-pointer text-left py-1"
                   >
                     {cause.name}
                   </button>
@@ -89,11 +89,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onNavigateCause, o
             <div className="text-xs font-semibold tracking-wider text-brand-primary uppercase">
               Explore
             </div>
-            <ul className="space-y-2 text-sm text-[#46544B]">
+            <ul className="space-y-1 text-sm text-[#46544B]">
               <li>
                 <button
                   onClick={() => scrollToSection('hero')}
-                  className="hover:text-brand-primary transition-colors cursor-pointer"
+                  className="min-h-[40px] flex items-center hover:text-brand-primary active:text-brand-primary transition-colors cursor-pointer py-1"
                 >
                   Campaigns
                 </button>
@@ -101,7 +101,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onNavigateCause, o
               <li>
                 <button
                   onClick={() => scrollToSection('story')}
-                  className="hover:text-brand-primary transition-colors cursor-pointer"
+                  className="min-h-[40px] flex items-center hover:text-brand-primary active:text-brand-primary transition-colors cursor-pointer py-1"
                 >
                   Field Dispatch
                 </button>
@@ -109,7 +109,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onNavigateCause, o
               <li>
                 <button
                   onClick={() => scrollToSection('impact')}
-                  className="hover:text-brand-primary transition-colors cursor-pointer"
+                  className="min-h-[40px] flex items-center hover:text-brand-primary active:text-brand-primary transition-colors cursor-pointer py-1"
                 >
                   Verified Impact
                 </button>
@@ -117,7 +117,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onNavigateCause, o
               <li>
                 <button
                   onClick={onOpenDonate}
-                  className="font-medium text-brand-primary hover:underline cursor-pointer"
+                  className="min-h-[40px] flex items-center font-medium text-brand-primary hover:underline cursor-pointer py-1"
                 >
                   Donate Now
                 </button>
@@ -141,7 +141,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onNavigateCause, o
               </div>
             ) : (
               <form onSubmit={handleSubscribe} className="space-y-2">
-                <div className="flex items-center rounded-full bg-[#FBFBF9] border border-[#DDD8CE] p-1 focus-within:border-brand-primary">
+                <div className="flex items-center rounded-full bg-[#FBFBF9] border border-[#DDD8CE] p-1 focus-within:border-brand-primary min-h-[46px]">
                   <input
                     type="email"
                     required
@@ -152,7 +152,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onNavigateCause, o
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2 rounded-full bg-brand-primary text-[#FBFBF9] text-xs font-medium hover:bg-brand-hover transition-colors cursor-pointer flex items-center gap-1 shrink-0"
+                    className="min-h-[40px] px-4 py-2 rounded-full bg-brand-primary text-[#FBFBF9] text-xs font-medium hover:bg-brand-hover transition-colors cursor-pointer flex items-center gap-1 shrink-0"
                     aria-label="Subscribe to dispatches"
                   >
                     <span>Join</span>

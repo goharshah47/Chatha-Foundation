@@ -139,30 +139,32 @@ export const DonationModal: React.FC<DonationModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#121B15]/65 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 xs:p-4 sm:p-6 bg-[#121B15]/70 backdrop-blur-sm animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-lg bg-[#FBFBF9] rounded-[24px] shadow-2xl border border-[#E8E4DA] overflow-hidden animate-in zoom-in-95 duration-200"
+        className="relative w-full max-w-lg bg-[#FBFBF9] rounded-2xl sm:rounded-[24px] shadow-2xl border border-[#E8E4DA] overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
         id="donation-modal-container"
       >
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 sm:px-8 pt-6 pb-4 border-b border-[#ECE8E0]">
+        {/* Header with step pill & Close (44px touch target) */}
+        <div className="flex items-center justify-between px-5 sm:px-8 pt-5 sm:pt-6 pb-3.5 border-b border-[#ECE8E0] shrink-0">
           <div>
             <div className="flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
               <span className="text-[11px] font-bold tracking-[0.2em] text-brand-primary uppercase">
-                Humanitarian Giving
+                {step === 'select' && 'Step 1 of 2 · Choose Gift'}
+                {step === 'details' && 'Step 2 of 2 · Donor Details'}
+                {step === 'success' && 'Donation Confirmed'}
               </span>
             </div>
-            <h2 className="text-2xl font-medium tracking-tight text-[#14231B] mt-0.5">
-              Make a difference
+            <h2 className="text-xl sm:text-2xl font-medium tracking-tight text-[#14231B] mt-0.5">
+              {step === 'success' ? 'Gift Received' : 'Make a donation'}
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-full text-[#647268] hover:text-[#14231B] hover:bg-[#EFECE4] transition-colors cursor-pointer"
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-[#647268] hover:text-[#14231B] hover:bg-[#EFECE4] transition-colors cursor-pointer"
             aria-label="Close donation dialog"
             id="close-donate-modal"
           >
@@ -171,18 +173,18 @@ export const DonationModal: React.FC<DonationModalProps> = ({
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 sm:p-8 max-h-[80vh] overflow-y-auto">
+        <div className="p-4 xs:p-6 sm:p-8 overflow-y-auto">
           
           {/* STEP 1: Amount & Cause Selection */}
           {step === 'select' && (
-            <div className="space-y-6">
+            <div className="space-y-5 sm:space-y-6">
               
-              {/* Frequency Toggle: One-time | Monthly */}
-              <div className="flex p-1 rounded-full bg-[#F0EDE5] border border-[#E3DFD5]">
+              {/* Frequency Toggle: One-time | Monthly (44px min height) */}
+              <div className="flex p-1 rounded-xl sm:rounded-full bg-[#F0EDE5] border border-[#E3DFD5]">
                 <button
                   type="button"
                   onClick={() => setFrequency('one-time')}
-                  className={`flex-1 py-2 rounded-full text-xs font-semibold tracking-wide transition-all cursor-pointer ${
+                  className={`min-h-[40px] flex-1 py-2 rounded-lg sm:rounded-full text-xs font-semibold tracking-wide transition-all cursor-pointer ${
                     frequency === 'one-time'
                       ? 'bg-[#FBFBF9] text-[#14231B] shadow-xs'
                       : 'text-[#637267] hover:text-[#14231B]'
@@ -194,7 +196,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setFrequency('monthly')}
-                  className={`flex-1 py-2 rounded-full text-xs font-semibold tracking-wide transition-all cursor-pointer ${
+                  className={`min-h-[40px] flex-1 py-2 rounded-lg sm:rounded-full text-xs font-semibold tracking-wide transition-all cursor-pointer ${
                     frequency === 'monthly'
                       ? 'bg-[#FBFBF9] text-[#14231B] shadow-xs'
                       : 'text-[#637267] hover:text-[#14231B]'
@@ -205,12 +207,12 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                 </button>
               </div>
 
-              {/* Amount Selection: £25 | £50 | £100 | Other */}
+              {/* Large Amount Selection: £25 | £50 | £100 | Other */}
               <div className="space-y-2">
                 <label className="block text-xs font-semibold tracking-wider text-[#47554D] uppercase">
                   Select Amount
                 </label>
-                <div className="grid grid-cols-4 gap-2.5">
+                <div className="grid grid-cols-4 gap-2 sm:gap-2.5">
                   {PRESET_AMOUNTS.map((amt) => {
                     const isSelected = !isCustom && selectedAmount === amt;
                     return (
@@ -218,10 +220,10 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                         key={amt}
                         type="button"
                         onClick={() => handlePresetClick(amt)}
-                        className={`py-3 rounded-xl text-sm font-semibold tracking-wide border transition-all cursor-pointer ${
+                        className={`min-h-[48px] py-3 rounded-xl text-base sm:text-sm font-semibold tracking-wide border transition-all cursor-pointer ${
                           isSelected
-                            ? 'bg-brand-primary text-[#FBFBF9] border-brand-primary shadow-xs'
-                            : 'bg-[#F7F5EF] text-[#2C3931] border-[#E3DFD5] hover:border-[#C9C4B7]'
+                            ? 'bg-brand-primary text-[#FBFBF9] border-brand-primary shadow-xs scale-[1.02]'
+                            : 'bg-[#F7F5EF] text-[#2C3931] border-[#E3DFD5] hover:border-[#C9C4B7] active:bg-[#ECE8DC]'
                         }`}
                         id={`amt-${amt}`}
                       >
@@ -232,10 +234,10 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                   <button
                     type="button"
                     onClick={handleCustomClick}
-                    className={`py-3 rounded-xl text-sm font-semibold tracking-wide border transition-all cursor-pointer ${
+                    className={`min-h-[48px] py-3 rounded-xl text-sm font-semibold tracking-wide border transition-all cursor-pointer ${
                       isCustom
-                        ? 'bg-brand-primary text-[#FBFBF9] border-brand-primary shadow-xs'
-                        : 'bg-[#F7F5EF] text-[#2C3931] border-[#E3DFD5] hover:border-[#C9C4B7]'
+                        ? 'bg-brand-primary text-[#FBFBF9] border-brand-primary shadow-xs scale-[1.02]'
+                        : 'bg-[#F7F5EF] text-[#2C3931] border-[#E3DFD5] hover:border-[#C9C4B7] active:bg-[#ECE8DC]'
                     }`}
                     id="amt-other-btn"
                   >
@@ -254,8 +256,8 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                         max="50000"
                         value={customAmountInput}
                         onChange={(e) => setCustomAmountInput(e.target.value)}
-                        placeholder="Enter amount"
-                        className="w-full pl-8 pr-4 py-2.5 rounded-xl bg-[#F7F5EF] border border-[#DDD9CF] text-[#14231B] text-sm font-medium focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary"
+                        placeholder="Enter custom amount"
+                        className="w-full min-h-[48px] pl-8 pr-4 py-2.5 rounded-xl bg-[#F7F5EF] border border-[#DDD9CF] text-[#14231B] text-base sm:text-sm font-medium focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary"
                         autoFocus
                         id="custom-amount-input"
                       />
@@ -265,7 +267,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
               </div>
 
               {/* Tangible Humanitarian Impact Note */}
-              <div className="p-4 rounded-xl bg-[#F4F1EA] border border-[#E5E0D5] text-xs text-[#3C4A41] leading-relaxed flex items-start gap-2.5">
+              <div className="p-3.5 sm:p-4 rounded-xl bg-[#F4F1EA] border border-[#E5E0D5] text-xs text-[#3C4A41] leading-relaxed flex items-start gap-2.5">
                 <Heart size={15} className="text-brand-primary shrink-0 mt-0.5" />
                 <span>{getImpactDescription(activeAmount, selectedCause)}</span>
               </div>
@@ -280,7 +282,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setActiveCustomLabel(undefined)}
-                      className="text-[11px] text-brand-primary hover:underline cursor-pointer"
+                      className="min-h-[36px] flex items-center text-[11px] text-brand-primary hover:underline cursor-pointer"
                     >
                       Change cause
                     </button>
@@ -311,26 +313,26 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                           setSelectedCause(c.id);
                           setActiveCustomLabel(undefined);
                         }}
-                        className={`p-2.5 text-left rounded-xl text-xs font-medium border transition-all cursor-pointer truncate ${
+                        className={`min-h-[44px] p-2.5 flex items-center text-left rounded-xl text-xs font-medium border transition-all cursor-pointer truncate ${
                           isSelected
-                            ? 'bg-brand-light border-brand-primary text-brand-primary font-semibold'
-                            : 'bg-[#FBFBF9] border-[#E3DFD5] text-[#47554D] hover:border-[#C4BEAF]'
+                            ? 'bg-brand-light border-brand-primary text-brand-primary font-semibold shadow-xs'
+                            : 'bg-[#FBFBF9] border-[#E3DFD5] text-[#47554D] hover:border-[#C4BEAF] active:bg-[#F2EFE8]'
                         }`}
                         id={`choose-cause-${c.id}`}
                       >
-                        {c.label}
+                        <span className="truncate">{c.label}</span>
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Primary Action */}
+              {/* Primary Action (Min 48px touch target) */}
               <div className="pt-2">
                 <button
                   type="button"
                   onClick={() => setStep('details')}
-                  className="w-full py-3.5 rounded-full bg-brand-primary text-[#FBFBF9] text-sm font-semibold tracking-wide hover:bg-brand-hover active:scale-[0.99] transition-all shadow-brand-sm cursor-pointer flex items-center justify-center gap-2 group"
+                  className="min-h-[48px] w-full py-3.5 rounded-xl sm:rounded-full bg-brand-primary text-[#FBFBF9] text-sm font-semibold tracking-wide hover:bg-brand-hover active:scale-[0.99] transition-all shadow-brand-sm cursor-pointer flex items-center justify-center gap-2 group"
                   id="donate-continue-btn"
                 >
                   <span>Donate £{activeAmount} {frequency === 'monthly' ? '/ month' : 'now'}</span>
@@ -343,7 +345,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
 
               {/* Trust Badge */}
               <div className="flex items-center justify-center gap-2 text-[11px] text-[#718076]">
-                <ShieldCheck size={13} className="text-brand-primary" />
+                <ShieldCheck size={13} className="text-brand-primary shrink-0" />
                 <span>100% donation guarantee · 256-bit encrypted giving</span>
               </div>
             </div>
@@ -351,8 +353,8 @@ export const DonationModal: React.FC<DonationModalProps> = ({
 
           {/* STEP 2: Donor Details */}
           {step === 'details' && (
-            <form onSubmit={handleCompleteDonation} className="space-y-5">
-              <div className="text-xs text-[#526258] pb-1">
+            <form onSubmit={handleCompleteDonation} className="space-y-4 sm:space-y-5">
+              <div className="text-xs text-[#526258] pb-1 bg-[#F4F1EA] p-3 rounded-xl border border-[#E5E0D5]">
                 Completing your <span className="font-semibold text-[#14231B]">£{activeAmount}</span> {frequency} gift for{' '}
                 <span className="font-semibold text-[#14231B]">
                   {activeCustomLabel || CAUSES_OPTIONS.find((c) => c.id === selectedCause)?.label}
@@ -369,7 +371,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                   value={donorName}
                   onChange={(e) => setDonorName(e.target.value)}
                   placeholder="e.g. Sarah Jenkins"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#F7F5EF] border border-[#DDD9CF] text-[#14231B] text-sm focus:outline-none focus:border-brand-primary"
+                  className="w-full min-h-[46px] px-4 py-2.5 rounded-xl bg-[#F7F5EF] border border-[#DDD9CF] text-[#14231B] text-base sm:text-sm focus:outline-none focus:border-brand-primary"
                   id="donor-name-input"
                 />
               </div>
@@ -384,7 +386,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                   value={donorEmail}
                   onChange={(e) => setDonorEmail(e.target.value)}
                   placeholder="sarah@example.com"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#F7F5EF] border border-[#DDD9CF] text-[#14231B] text-sm focus:outline-none focus:border-brand-primary"
+                  className="w-full min-h-[46px] px-4 py-2.5 rounded-xl bg-[#F7F5EF] border border-[#DDD9CF] text-[#14231B] text-base sm:text-sm focus:outline-none focus:border-brand-primary"
                   id="donor-email-input"
                 />
               </div>
@@ -396,24 +398,24 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                   id="gift-aid-checkbox"
                   checked={giftAid}
                   onChange={(e) => setGiftAid(e.target.checked)}
-                  className="mt-0.5 rounded border-[#C4BEAF] text-brand-primary focus:ring-brand-primary cursor-pointer"
+                  className="mt-0.5 w-4 h-4 rounded border-[#C4BEAF] text-brand-primary focus:ring-brand-primary cursor-pointer"
                 />
-                <label htmlFor="gift-aid-checkbox" className="text-xs text-[#3C4A41] cursor-pointer">
+                <label htmlFor="gift-aid-checkbox" className="text-xs text-[#3C4A41] cursor-pointer leading-relaxed">
                   <span className="font-medium text-[#14231B]">Add 25% Gift Aid at no cost to you.</span> I am a UK taxpayer and would like Chatha Foundation to reclaim tax on all my donations.
                 </label>
               </div>
 
-              <div className="pt-3 flex gap-3">
+              <div className="pt-3 flex flex-col sm:flex-row gap-2.5 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => setStep('select')}
-                  className="px-4 py-3 rounded-full border border-[#D5D0C5] text-xs font-semibold text-[#48564D] hover:bg-[#EFECE4] transition-colors cursor-pointer"
+                  className="min-h-[46px] px-4 py-3 rounded-xl sm:rounded-full border border-[#D5D0C5] text-xs font-semibold text-[#48564D] hover:bg-[#EFECE4] active:bg-[#E8E4D8] transition-colors cursor-pointer text-center"
                 >
                   Back
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3 rounded-full bg-brand-primary text-[#FBFBF9] text-sm font-semibold tracking-wide hover:bg-brand-hover transition-all shadow-md cursor-pointer flex items-center justify-center gap-2"
+                  className="min-h-[48px] flex-1 py-3.5 rounded-xl sm:rounded-full bg-brand-primary text-[#FBFBF9] text-sm font-semibold tracking-wide hover:bg-brand-hover active:scale-[0.98] transition-all shadow-md cursor-pointer flex items-center justify-center gap-2"
                   id="submit-donation-btn"
                 >
                   <span>Complete Gift of £{activeAmount}</span>
@@ -425,16 +427,16 @@ export const DonationModal: React.FC<DonationModalProps> = ({
 
           {/* STEP 3: Thank You / Confirmation */}
           {step === 'success' && (
-            <div className="text-center py-6 space-y-5 animate-in fade-in duration-200">
+            <div className="text-center py-5 space-y-4 sm:space-y-5 animate-in fade-in duration-200">
               <div className="w-14 h-14 mx-auto rounded-full bg-brand-light flex items-center justify-center text-brand-primary">
                 <Check size={28} />
               </div>
 
-              <div className="space-y-2">
-                <h3 className="text-2xl font-medium tracking-tight text-[#14231B]">
+              <div className="space-y-1.5">
+                <h3 className="text-xl sm:text-2xl font-medium tracking-tight text-[#14231B]">
                   Thank you for your generosity
                 </h3>
-                <p className="text-sm text-[#556358] max-w-sm mx-auto leading-relaxed">
+                <p className="text-xs sm:text-sm text-[#556358] max-w-sm mx-auto leading-relaxed">
                   Your gift of <span className="font-semibold text-[#14231B]">£{activeAmount}</span> for{' '}
                   <span className="font-semibold text-[#14231B]">
                     {activeCustomLabel || CAUSES_OPTIONS.find((c) => c.id === selectedCause)?.label}
@@ -462,7 +464,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-8 py-3 rounded-full bg-brand-primary text-[#FBFBF9] text-xs font-semibold tracking-wider hover:bg-brand-hover transition-all cursor-pointer"
+                  className="min-h-[46px] w-full sm:w-auto px-8 py-3 rounded-xl sm:rounded-full bg-brand-primary text-[#FBFBF9] text-xs font-semibold tracking-wider hover:bg-brand-hover active:scale-[0.98] transition-all cursor-pointer"
                   id="finish-donate-modal"
                 >
                   RETURN TO WEBSITE

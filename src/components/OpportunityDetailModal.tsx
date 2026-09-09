@@ -34,27 +34,27 @@ export const OpportunityDetailModal: React.FC<OpportunityDetailModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-y-auto bg-[#14221A]/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6"
+      className="fixed inset-0 z-50 overflow-y-auto bg-[#14221A]/60 backdrop-blur-sm flex items-center justify-center p-3 xs:p-4 sm:p-6"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="opportunity-detail-title"
     >
       <div
-        className="relative w-full max-w-2xl bg-[#FDFCFB] rounded-2xl sm:rounded-3xl border border-[#E8E3D8] shadow-[0_24px_64px_rgba(20,34,26,0.18)] overflow-hidden my-6 animate-in fade-in zoom-in-95 duration-200"
+        className="relative w-full max-w-2xl bg-[#FDFCFB] rounded-2xl sm:rounded-3xl border border-[#E8E3D8] shadow-[0_24px_64px_rgba(20,34,26,0.18)] overflow-hidden my-4 sm:my-6 animate-in fade-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close Button */}
+        {/* Close Button (Min 44px touch target) */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-[#FDFCFB]/90 hover:bg-[#F4F0E8] border border-[#E2DDD2] text-[#47574E] hover:text-[#18261E] flex items-center justify-center transition-colors cursor-pointer focus:outline-none"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 min-w-[44px] min-h-[44px] rounded-full bg-[#FDFCFB]/95 hover:bg-[#F4F0E8] border border-[#E2DDD2] text-[#47574E] hover:text-[#18261E] flex items-center justify-center transition-colors cursor-pointer focus:outline-none shadow-sm"
           aria-label="Close details"
         >
           <X size={18} />
         </button>
 
-        {/* Large Humanitarian Image */}
-        <div className="relative h-64 sm:h-72 w-full bg-[#EAE5DC] overflow-hidden">
+        {/* Humanitarian Image */}
+        <div className="relative h-52 xs:h-60 sm:h-72 w-full bg-[#EAE5DC] overflow-hidden">
           <CharityImage
             src={opportunity.imageUrl}
             fallbackUrls={opportunity.fallbackUrls}
@@ -64,18 +64,18 @@ export const OpportunityDetailModal: React.FC<OpportunityDetailModalProps> = ({
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#14221A]/70 via-transparent to-transparent" />
           
-          <div className="absolute bottom-4 left-5 right-5 text-white">
-            <span className="inline-block text-[11px] font-semibold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md mb-1.5 text-white/90">
+          <div className="absolute bottom-3 left-4 right-4 sm:left-5 sm:right-5 text-white">
+            <span className="inline-block text-[11px] font-semibold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md mb-1 sm:mb-1.5 text-white/90">
               {opportunity.subtitle || 'Field Opportunity'}
             </span>
-            <h2 id="opportunity-detail-title" className="text-xl sm:text-2xl font-semibold tracking-tight text-white drop-shadow-sm">
+            <h2 id="opportunity-detail-title" className="text-lg xs:text-xl sm:text-2xl font-semibold tracking-tight text-white drop-shadow-sm">
               {opportunity.title}
             </h2>
           </div>
         </div>
 
         {/* Content Body */}
-        <div className="p-6 sm:p-8 space-y-6 max-h-[calc(85vh-280px)] overflow-y-auto">
+        <div className="p-4 xs:p-6 sm:p-8 space-y-4 sm:space-y-6 max-h-[calc(88vh-240px)] overflow-y-auto">
           {/* Short Description */}
           <p className="text-base text-[#3C4A41] leading-relaxed font-normal">
             {opportunity.shortDesc}
@@ -176,8 +176,8 @@ export const OpportunityDetailModal: React.FC<OpportunityDetailModalProps> = ({
         </div>
 
         {/* Modal Footer CTA */}
-        <div className="p-5 sm:p-6 bg-[#F8F5EE] border-t border-[#ECE7DC] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
+        <div className="p-4 sm:p-6 bg-[#F8F5EE] border-t border-[#ECE7DC] flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+          <div className="w-full sm:w-auto text-center sm:text-left">
             <span className="text-xs text-[#637267] block">Support this cause</span>
             <span className="text-sm font-semibold text-[#25342B]">
               {opportunity.suggestedAmount ? `Suggested from £${opportunity.suggestedAmount}` : 'Any amount helps'}
@@ -189,7 +189,7 @@ export const OpportunityDetailModal: React.FC<OpportunityDetailModalProps> = ({
               onClose();
               onDonate(opportunity);
             }}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-brand-primary text-white text-sm font-semibold hover:bg-brand-hover transition-colors shadow-sm cursor-pointer"
+            className="min-h-[48px] w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl sm:rounded-full bg-brand-primary text-white text-sm font-semibold hover:bg-brand-hover active:scale-[0.98] transition-colors shadow-sm cursor-pointer"
           >
             <span>Donate Now</span>
             <ArrowRight size={15} />
