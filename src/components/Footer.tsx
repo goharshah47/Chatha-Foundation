@@ -22,11 +22,9 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onNavigateCause, o
   const scrollToSection = (id: string) => {
     if (onNavigateHome) onNavigateHome();
     setTimeout(() => {
-      const element = document.getElementById(id);
+      const element = document.getElementById(id) || document.querySelector(`#${id}`);
       if (element) {
-        const yOffset = -72;
-        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        window.scrollTo({ top: y, behavior: 'smooth' });
+        element.scrollIntoView({ behavior: 'smooth' });
       }
     }, 50);
   };

@@ -5,6 +5,7 @@ import { useTheme } from '../context/ThemeContext';
 import { ViewSwitcher } from './ViewSwitcher';
 import { ThemeSelector } from './ThemeSelector';
 import { Smartphone } from 'lucide-react';
+import { MobileApp } from '../mobile/MobileApp';
 
 interface MobilePreviewWrapperProps {
   children: React.ReactNode;
@@ -23,17 +24,6 @@ export const MobilePreviewWrapper: React.FC<MobilePreviewWrapperProps> = ({ chil
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [mountNode, setMountNode] = useState<HTMLElement | null>(null);
-  const [isWindowSmall, setIsWindowSmall] = useState(false);
-
-  // Detect if the parent browser window is already a mobile screen
-  useEffect(() => {
-    const handleResize = () => {
-      setIsWindowSmall(window.innerWidth < 640);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   // Synchronize CSS styles, Google Fonts, and theme variables into iframe
   const syncStylesAndTheme = () => {
@@ -43,6 +33,12 @@ export const MobilePreviewWrapper: React.FC<MobilePreviewWrapperProps> = ({ chil
 
     // Clear and re-populate head
     doc.head.innerHTML = '';
+
+    // Viewport meta
+    const metaViewport = doc.createElement('meta');
+    metaViewport.name = 'viewport';
+    metaViewport.content = 'width=device-width, initial-scale=1.0';
+    doc.head.appendChild(metaViewport);
 
     // Copy styles and links from main document
     const headElements = document.head.querySelectorAll(
@@ -114,7 +110,7 @@ export const MobilePreviewWrapper: React.FC<MobilePreviewWrapperProps> = ({ chil
 
   // Initialize iframe contentDocument and portal mount target
   useEffect(() => {
-    if (viewMode !== 'mobile' || isWindowSmall) {
+    if (viewMode !== 'mobile') {
       setMountNode(null);
       return;
     }
@@ -130,24 +126,28 @@ export const MobilePreviewWrapper: React.FC<MobilePreviewWrapperProps> = ({ chil
       }
     };
 
-    // If already ready
-    if (iframe.contentDocument?.readyState === 'complete') {
-      setupIframe();
-    }
+    // Attempt immediate setup
+    setupIframe();
+
+    // Fallback timers to handle asynchronous about:blank load
+    const t1 = setTimeout(setupIframe, 30);
+    const t2 = setTimeout(setupIframe, 150);
 
     iframe.addEventListener('load', setupIframe);
 
-    // Observer for any dynamically injected Vite CSS
+    // Observer for dynamically injected Vite CSS during development
     const observer = new MutationObserver(() => {
       syncStylesAndTheme();
     });
     observer.observe(document.head, { childList: true, subtree: true });
 
     return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
       iframe.removeEventListener('load', setupIframe);
       observer.disconnect();
     };
-  }, [viewMode, isWindowSmall, mobileWidth]);
+  }, [viewMode, mobileWidth]);
 
   // Sync theme changes in real-time
   useEffect(() => {
@@ -156,9 +156,32 @@ export const MobilePreviewWrapper: React.FC<MobilePreviewWrapperProps> = ({ chil
     }
   }, [theme, viewMode]);
 
-  // If in standard desktop mode or on a tiny mobile screen, render normal children directly
-  if (viewMode === 'desktop' || isWindowSmall) {
+  const [windowWidth, setWindowWidth] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // If in standard desktop mode, render children directly with full desktop layout
+  if (viewMode === 'desktop') {
     return <>{children}</>;
+  }
+
+  // If opened directly on a mobile screen (< 640px), render MobileApp edge-to-edge natively
+  if (windowWidth < 640) {
+    return (
+      <div className="relative min-h-screen bg-[#FBFBF9]">
+        <div className="sticky top-0 z-40 bg-[#ECE7DC]/95 backdrop-blur-md px-3 py-1 flex items-center justify-between text-[11px] border-b border-[#DCD6C8]">
+          <span className="font-semibold text-[#14221A] text-[11px]">Mobile App Experience</span>
+          <ViewSwitcher size="sm" />
+        </div>
+        <MobileApp />
+      </div>
+    );
   }
 
   return (
@@ -248,8 +271,8 @@ export const MobilePreviewWrapper: React.FC<MobilePreviewWrapperProps> = ({ chil
             className="w-full flex-1 border-0 bg-[#FBFBF9]"
           />
 
-          {/* Render children into iframe body via createPortal */}
-          {mountNode && createPortal(children, mountNode)}
+          {/* Render dedicated MobileApp into iframe body via createPortal */}
+          {mountNode && createPortal(<MobileApp />, mountNode)}
         </div>
       </main>
     </div>

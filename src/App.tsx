@@ -52,14 +52,22 @@ export default function App() {
     setDonateModalOpen(true);
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const iframe = document.getElementById('mobile-preview-iframe') as HTMLIFrameElement | null;
+    if (iframe?.contentWindow) {
+      iframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   const handleNavigateCause = (slug: CauseSlug) => {
     setCurrentCauseSlug(slug);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTop();
   };
 
   const handleNavigateHome = () => {
     setCurrentCauseSlug(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTop();
   };
 
   const activeCauseData = currentCauseSlug ? CAUSES_PAGES_DATA[currentCauseSlug] : null;
