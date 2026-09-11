@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   ChevronRight,
   ArrowRight,
@@ -10,9 +10,94 @@ import {
   Check,
 } from 'lucide-react';
 import { useMobileApp } from '../context/MobileAppContext';
-import { HERO_CAMPAIGNS, CAUSES_LIST } from '../../data/charityData';
+import { CAUSES_LIST } from '../../data/charityData';
 import { CharityImage } from '../../components/CharityImage';
 import { CauseSlug } from '../../types';
+
+interface HeroCampaignSlide {
+  id: string;
+  title: string;
+  causeSlug: CauseSlug;
+  supportingText: string;
+  tag: string;
+  location: string;
+  imageUrl: string;
+  fallbackUrls?: string[];
+  imageAlt: string;
+}
+
+const HERO_SLIDES: HeroCampaignSlide[] = [
+  {
+    id: 'water-aid',
+    title: 'Water Aid',
+    causeSlug: 'water-aid',
+    tag: 'Clean Water',
+    location: 'Tharparkar & Sindh Basin',
+    supportingText: 'Help provide clean and reliable water to communities in need.',
+    imageUrl: 'https://images.unsplash.com/photo-1594708767771-a7502209ff51?auto=format&fit=crop&w=1920&q=85',
+    fallbackUrls: [
+      'https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&w=1920&q=85',
+      'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1920&q=85',
+    ],
+    imageAlt: 'Community borehole delivering fresh drinking water',
+  },
+  {
+    id: 'food-aid',
+    title: 'Food Aid',
+    causeSlug: 'food-aid',
+    tag: 'Food Aid',
+    location: 'South Punjab & Flood Zones',
+    supportingText: 'Deliver life-saving food parcels and daily meals to hungry families.',
+    imageUrl: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1920&q=85',
+    fallbackUrls: [
+      'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1920&q=85',
+      'https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=1920&q=85',
+    ],
+    imageAlt: 'Humanitarian volunteers preparing emergency food parcels',
+  },
+  {
+    id: 'orphan-support',
+    title: 'Orphan Support',
+    causeSlug: 'orphan-aid',
+    tag: 'Orphan Support',
+    location: 'Educational & Care Centers',
+    supportingText: 'Provide shelter, schooling, and healthcare to orphaned children.',
+    imageUrl: 'https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=1920&q=85',
+    fallbackUrls: [
+      'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1920&q=85',
+      'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1920&q=85',
+    ],
+    imageAlt: 'Orphaned children studying in a supportive classroom',
+  },
+  {
+    id: 'family-support',
+    title: 'Family Support',
+    causeSlug: 'family-support',
+    tag: 'Family Support',
+    location: 'Winter Relocation Camps',
+    supportingText: 'Help vulnerable families recover with emergency relief and shelter.',
+    imageUrl: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=1920&q=85',
+    fallbackUrls: [
+      'https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1920&q=85',
+      'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=1920&q=85',
+    ],
+    imageAlt: 'Mother holding child with warmth and protective dignity',
+  },
+  {
+    id: 'ramadan-giving',
+    title: 'Ramadan Giving',
+    causeSlug: 'ramadan',
+    tag: 'Ramadan Giving',
+    location: 'Nationwide Distribution',
+    supportingText: 'Share your blessings with Iftar meals and full-month food parcels.',
+    imageUrl: 'https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=1920&q=85',
+    fallbackUrls: [
+      'https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&w=1920&q=85',
+      'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1920&q=85',
+    ],
+    imageAlt: 'Warm Iftar meals and dates prepared for fasting families',
+  },
+];
 
 interface RecentDonatedItem {
   id: string;
@@ -134,7 +219,12 @@ export const HomeScreen: React.FC = () => {
 
   // Campaign Carousel State
   const [activeSlide, setActiveSlide] = useState(0);
+  const [isInteracting, setIsInteracting] = useState(false);
   const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const touchDiffX = useRef<number>(0);
+  const isDragging = useRef<boolean>(false);
+  const resumeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Quick Donate State
   const [donationType, setDonationType] = useState<'one-time' | 'monthly'>('one-time');
@@ -146,21 +236,54 @@ export const HomeScreen: React.FC = () => {
   const gbpPresets = [25, 50, 100];
   const activePresets = currency === 'Rs.' ? pkrPresets : gbpPresets;
 
-  const currentCampaign = HERO_CAMPAIGNS[activeSlide] || HERO_CAMPAIGNS[0];
+  // Autoplay automatically every 5–7 seconds (6 seconds selected)
+  // Pauses while the user is actively interacting
+  useEffect(() => {
+    if (isInteracting) return;
+    const timer = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [isInteracting]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+    setIsInteracting(true);
     touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+    touchDiffX.current = 0;
+    isDragging.current = true;
   };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartX.current === null) return;
-    const diff = touchStartX.current - e.changedTouches[0].clientX;
-    if (diff > 45 && activeSlide < HERO_CAMPAIGNS.length - 1) {
-      setActiveSlide((prev) => prev + 1);
-    } else if (diff < -45 && activeSlide > 0) {
-      setActiveSlide((prev) => prev - 1);
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging.current || touchStartX.current === null) return;
+    touchDiffX.current = touchStartX.current - e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+
+    const diff = touchDiffX.current;
+    if (Math.abs(diff) > 35) {
+      if (diff > 0) {
+        // Swiped left -> advance to next slide
+        setActiveSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+      } else {
+        // Swiped right -> go to previous slide
+        setActiveSlide((prev) => (prev > 0 ? prev - 1 : HERO_SLIDES.length - 1));
+      }
     }
+
     touchStartX.current = null;
+    touchStartY.current = null;
+    touchDiffX.current = 0;
+
+    // Pause autoplay for 5 seconds after interaction ceases before resuming
+    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+    resumeTimerRef.current = setTimeout(() => {
+      setIsInteracting(false);
+    }, 5000);
   };
 
   const handleQuickDonate = () => {
@@ -171,94 +294,103 @@ export const HomeScreen: React.FC = () => {
 
   return (
     <div id="mobile-home-screen" className="pb-12 space-y-4">
-      {/* 1. COMPACT HERO / CAMPAIGN SLIDER (Approx 75% shorter than previous ~450px height) */}
+      {/* 1. MOBILE CAMPAIGN SLIDER (Compact, True Mobile Carousel) */}
       <section
         className="relative px-4 pt-2.5"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
+        onMouseEnter={() => setIsInteracting(true)}
+        onMouseLeave={() => setIsInteracting(false)}
       >
-        <div className="relative h-[120px] rounded-2xl overflow-hidden shadow-2xs border border-[#E7E1D4] bg-[#14221A] text-white">
-          {/* Photography Canvas */}
-          <CharityImage
-            src={currentCampaign.imageUrl}
-            fallbackUrls={currentCampaign.fallbackUrls}
-            alt={currentCampaign.imageAlt}
-            className="absolute inset-0 w-full h-full object-cover object-center opacity-85 transition-opacity duration-300"
-          />
-          {/* Subtle Warm Horizontal Vignette */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#14221A]/95 via-[#14221A]/80 to-[#14221A]/40" />
+        <div
+          className="relative h-[150px] rounded-2xl overflow-hidden shadow-2xs border border-[#E7E1D4] bg-[#14221A] text-white touch-pan-y select-none"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Slider Horizontal Track */}
+          <div
+            className="flex w-full h-full transition-transform duration-500 ease-out"
+            style={{
+              transform: `translateX(-${activeSlide * 100}%)`,
+            }}
+          >
+            {HERO_SLIDES.map((slide, index) => (
+              <div
+                key={slide.id}
+                className="w-full h-full shrink-0 relative overflow-hidden flex flex-col justify-between p-3"
+              >
+                {/* Humanitarian Campaign Image */}
+                <CharityImage
+                  src={slide.imageUrl}
+                  fallbackUrls={slide.fallbackUrls}
+                  alt={slide.imageAlt}
+                  className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none"
+                />
+                {/* Dark Vignette Overlay for High Contrast & Legibility */}
+                <div className="absolute inset-0 bg-gradient-to-r from-[#111C15]/95 via-[#111C15]/80 to-[#111C15]/45 pointer-events-none" />
 
-          {/* Banner Internal Layout */}
-          <div className="relative h-full p-2.5 flex flex-col justify-between">
-            {/* Top Row: Category Pill + Location + Slide Indicators */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/95 text-[#16251C] text-[9.5px] font-bold tracking-wider shadow-2xs">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
-                  {currentCampaign.label}
-                </span>
-                <span className="text-[10px] font-medium text-white/80 hidden xs:inline truncate max-w-[130px]">
-                  {currentCampaign.location}
-                </span>
-              </div>
+                {/* Top Row: Category Tag & Pagination Count (e.g. 01 / 05) */}
+                <div className="relative z-10 flex items-center justify-between">
+                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/95 text-[#14221A] text-[9.5px] font-bold tracking-wide shadow-2xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
+                    {slide.tag}
+                  </span>
+                  <div className="flex items-center gap-1 bg-black/45 backdrop-blur-xs px-2 py-0.5 rounded-full text-white/90 text-[9.5px] font-semibold tabular-nums">
+                    <span>0{index + 1}</span>
+                    <span className="text-white/40">/</span>
+                    <span className="text-white/60">0{HERO_SLIDES.length}</span>
+                  </div>
+                </div>
 
-              {/* Slider Dots */}
-              <div className="flex items-center gap-1 bg-black/40 backdrop-blur-xs px-2 py-0.5 rounded-full">
-                {HERO_CAMPAIGNS.map((c, i) => (
+                {/* Middle: Campaign Title & Short Supporting Description */}
+                <div className="relative z-10 space-y-0.5 pr-2 mt-auto">
+                  <h2 className="text-[15px] font-bold tracking-tight text-white leading-tight">
+                    {slide.title}
+                  </h2>
+                  <p className="text-[11px] text-[#E0E7DC] line-clamp-1 leading-snug font-normal">
+                    {slide.supportingText}
+                  </p>
+                </div>
+
+                {/* Bottom Row: Donate Now CTA & Pagination Dots */}
+                <div className="relative z-10 flex items-center justify-between pt-1">
                   <button
-                    key={c.id}
                     type="button"
-                    onClick={() => setActiveSlide(i)}
-                    aria-label={`Go to slide ${i + 1}`}
-                    className={`h-1 rounded-full transition-all duration-300 cursor-pointer ${
-                      activeSlide === i ? 'w-3.5 bg-brand-primary' : 'w-1 bg-white/40'
-                    }`}
-                  />
-                ))}
-                <span className="text-[9px] font-medium text-white/70 ml-1">
-                  {activeSlide + 1}/{HERO_CAMPAIGNS.length}
-                </span>
-              </div>
-            </div>
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openDonationFlow(
+                        slide.causeSlug,
+                        currency === 'Rs.' ? 2500 : 50,
+                        donationType
+                      );
+                    }}
+                    className="min-h-[32px] px-3.5 rounded-lg bg-brand-primary hover:bg-brand-hover active:scale-95 text-white text-[11.5px] font-bold flex items-center gap-1.5 shadow-[0_2px_8px_rgba(20,35,27,0.35)] transition-all cursor-pointer"
+                  >
+                    <span>Donate Now</span>
+                    <ArrowRight size={13} strokeWidth={2.4} />
+                  </button>
 
-            {/* Middle Row: Headline & Snippet */}
-            <div className="pr-2 space-y-0.5">
-              <h2 className="text-[13px] font-bold tracking-tight text-white leading-tight line-clamp-1">
-                {currentCampaign.headline.split('\n')[0]}
-              </h2>
-              <p className="text-[10.5px] text-[#E0E7DC] line-clamp-1 leading-tight font-normal">
-                {currentCampaign.supportingText}
-              </p>
-            </div>
-
-            {/* Bottom Row: Micro Actions */}
-            <div className="flex items-center justify-between pt-0.5">
-              <span className="text-[9.5px] text-white/70 font-medium">
-                Swipe to browse ({HERO_CAMPAIGNS.length} campaigns)
-              </span>
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() =>
-                    pushScreen({
-                      type: 'cause_detail',
-                      params: { causeSlug: causeIdToSlug(currentCampaign.causeId) },
-                    })
-                  }
-                  className="px-2 py-0.5 rounded-md bg-white/15 hover:bg-white/25 text-white text-[10.5px] font-medium transition-colors cursor-pointer"
-                >
-                  Details
-                </button>
-                <button
-                  type="button"
-                  onClick={() => openDonationFlow(causeIdToSlug(currentCampaign.causeId), 2500)}
-                  className="min-h-[26px] px-2.5 rounded-lg bg-brand-primary hover:bg-brand-hover text-white text-[11px] font-bold flex items-center gap-1 shadow-xs active:scale-95 transition-all cursor-pointer"
-                >
-                  <span>Support</span>
-                  <ArrowRight size={11} />
-                </button>
+                  {/* Subtle Pagination Dots */}
+                  <div className="flex items-center gap-1 bg-black/35 backdrop-blur-xs px-2 py-1 rounded-full">
+                    {HERO_SLIDES.map((_, dotIdx) => (
+                      <button
+                        key={dotIdx}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveSlide(dotIdx);
+                        }}
+                        aria-label={`Go to slide ${dotIdx + 1}`}
+                        className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                          activeSlide === dotIdx
+                            ? 'w-3.5 bg-brand-primary'
+                            : 'w-1.5 bg-white/40 hover:bg-white/70'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
