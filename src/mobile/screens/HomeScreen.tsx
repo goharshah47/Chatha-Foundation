@@ -2,16 +2,12 @@ import React, { useState, useRef } from 'react';
 import {
   ChevronRight,
   ArrowRight,
-  Heart,
   Droplets,
   Utensils,
   Users,
   Moon,
   ShieldCheck,
-  Sparkles,
   Check,
-  Lock,
-  Clock,
 } from 'lucide-react';
 import { useMobileApp } from '../context/MobileAppContext';
 import { HERO_CAMPAIGNS, CAUSES_LIST } from '../../data/charityData';
@@ -145,18 +141,9 @@ export const HomeScreen: React.FC = () => {
   const [selectedAmount, setSelectedAmount] = useState<number>(2500);
   const [customAmount, setCustomAmount] = useState<string>('');
   const [isCustom, setIsCustom] = useState<boolean>(false);
-  const [quickCause, setQuickCause] = useState<CauseSlug>('water-aid');
 
-  const pkrPresets = [
-    { amount: 1000, label: 'Hot Meals' },
-    { amount: 2500, label: 'Clean Water' },
-    { amount: 5000, label: 'Food Parcel' },
-  ];
-  const gbpPresets = [
-    { amount: 25, label: 'Hot Meals' },
-    { amount: 50, label: 'Clean Water' },
-    { amount: 100, label: 'Food Parcel' },
-  ];
+  const pkrPresets = [1000, 2500, 5000];
+  const gbpPresets = [25, 50, 100];
   const activePresets = currency === 'Rs.' ? pkrPresets : gbpPresets;
 
   const currentCampaign = HERO_CAMPAIGNS[activeSlide] || HERO_CAMPAIGNS[0];
@@ -177,19 +164,10 @@ export const HomeScreen: React.FC = () => {
   };
 
   const handleQuickDonate = () => {
-    const finalAmount = isCustom ? Number(customAmount) || 1000 : selectedAmount;
-    openDonationFlow(quickCause, finalAmount, donationType);
+    const defaultAmount = currency === 'Rs.' ? 1000 : 25;
+    const finalAmount = isCustom ? Number(customAmount) || defaultAmount : selectedAmount;
+    openDonationFlow('water-aid', finalAmount, donationType);
   };
-
-  const causesOptions: { slug: CauseSlug; label: string; icon: React.FC<{ size?: number; className?: string; strokeWidth?: number }> }[] = [
-    { slug: 'water-aid', label: 'Clean Water', icon: Droplets },
-    { slug: 'food-aid', label: 'Food Aid', icon: Utensils },
-    { slug: 'orphan-aid', label: 'Orphans', icon: Users },
-    { slug: 'ramadan', label: 'Emergency', icon: ShieldCheck },
-  ];
-
-  const activeCauseLabel = causesOptions.find((c) => c.slug === quickCause)?.label || 'Our Causes';
-  const effectiveAmount = isCustom ? Number(customAmount) || 0 : selectedAmount;
 
   return (
     <div id="mobile-home-screen" className="pb-12 space-y-4">
@@ -285,27 +263,22 @@ export const HomeScreen: React.FC = () => {
         </div>
       </section>
 
-      {/* 2. IMPROVED DONATE SECTION (Polished, high-priority mobile donation card) */}
+      {/* 2. COMPACT DONATE SECTION */}
       <section className="px-4">
-        <div className="rounded-2xl bg-[#FDFCFB] border border-[#E6E0D5] p-3.5 shadow-[0_4px_20px_rgba(20,35,27,0.05)] space-y-3.5">
-          {/* Header Row: Visual Anchor & Currency Toggle */}
-          <div className="flex items-center justify-between pb-1 border-b border-[#F0ECE3]">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-xl bg-brand-light text-brand-primary flex items-center justify-center shadow-2xs">
-                <Heart size={14} strokeWidth={2.4} fill="currentColor" />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-[#16251C] leading-none">
-                  Make a Direct Donation
-                </h3>
-                <p className="text-[10px] text-[#697A6F] mt-0.5">
-                  100% field delivery · Zakat & Sadaqah eligible
-                </p>
-              </div>
+        <div className="rounded-2xl bg-[#FDFCFB] border border-[#E7E2D6] p-3 shadow-2xs space-y-2.5">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-[14px] font-bold text-[#16251C] tracking-tight leading-snug">
+                Donate Today
+              </h3>
+              <p className="text-[11px] text-[#65756B] leading-none mt-0.5">
+                Choose an amount and make an impact.
+              </p>
             </div>
 
-            {/* Currency Pill */}
-            <div className="inline-flex items-center p-0.5 rounded-lg bg-[#ECE8DF] text-[10.5px] font-semibold">
+            {/* Currency Switcher */}
+            <div className="inline-flex items-center p-0.5 rounded-lg bg-[#EFECE5] text-[10.5px] font-semibold">
               <button
                 type="button"
                 onClick={() => {
@@ -313,13 +286,13 @@ export const HomeScreen: React.FC = () => {
                   setSelectedAmount(2500);
                   setIsCustom(false);
                 }}
-                className={`px-2 py-0.5 rounded-md transition-all cursor-pointer ${
+                className={`px-1.5 py-0.5 rounded-md transition-all cursor-pointer ${
                   currency === 'Rs.'
-                    ? 'bg-brand-primary text-white font-bold shadow-2xs'
-                    : 'text-[#4F5F54] hover:text-[#18261E]'
+                    ? 'bg-white text-[#16251C] font-bold shadow-2xs'
+                    : 'text-[#65756B] hover:text-[#16251C]'
                 }`}
               >
-                PKR (Rs.)
+                Rs.
               </button>
               <button
                 type="button"
@@ -328,117 +301,99 @@ export const HomeScreen: React.FC = () => {
                   setSelectedAmount(50);
                   setIsCustom(false);
                 }}
-                className={`px-2 py-0.5 rounded-md transition-all cursor-pointer ${
+                className={`px-1.5 py-0.5 rounded-md transition-all cursor-pointer ${
                   currency === '£'
-                    ? 'bg-brand-primary text-white font-bold shadow-2xs'
-                    : 'text-[#4F5F54] hover:text-[#18261E]'
+                    ? 'bg-white text-[#16251C] font-bold shadow-2xs'
+                    : 'text-[#65756B] hover:text-[#16251C]'
                 }`}
               >
-                GBP (£)
+                GBP
               </button>
             </div>
           </div>
 
-          {/* Giving Frequency: One-Time vs Monthly */}
-          <div className="grid grid-cols-2 p-1 rounded-xl bg-[#EFECE5] border border-[#E1DDD2]">
+          {/* One-time | Monthly Segmented Control */}
+          <div className="grid grid-cols-2 p-0.5 rounded-xl bg-[#EFECE5] border border-[#E1DDD2]">
             <button
               type="button"
               onClick={() => setDonationType('one-time')}
-              className={`py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`py-1.5 rounded-[10px] text-xs font-semibold transition-all cursor-pointer ${
                 donationType === 'one-time'
-                  ? 'bg-brand-primary text-white shadow-2xs font-bold'
-                  : 'text-[#4A5A50] hover:text-[#18261E]'
+                  ? 'bg-white text-[#16251C] shadow-2xs font-bold'
+                  : 'text-[#55665C] hover:text-[#16251C]'
               }`}
             >
-              One-Time Gift
+              One-time
             </button>
             <button
               type="button"
               onClick={() => setDonationType('monthly')}
-              className={`py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-1 ${
+              className={`py-1.5 rounded-[10px] text-xs font-semibold transition-all cursor-pointer ${
                 donationType === 'monthly'
-                  ? 'bg-brand-primary text-white shadow-2xs font-bold'
-                  : 'text-[#4A5A50] hover:text-[#18261E]'
+                  ? 'bg-white text-[#16251C] shadow-2xs font-bold'
+                  : 'text-[#55665C] hover:text-[#16251C]'
               }`}
             >
-              <span>Monthly Giving</span>
-              <span className="text-[9px] font-bold px-1 rounded bg-white/20 uppercase tracking-tight">
-                Impact
-              </span>
+              Monthly
             </button>
           </div>
 
-          {/* Preset Amount Selection Grid */}
+          {/* Amounts Row: Rs. 1,000 | Rs. 2,500 | Rs. 5,000 | Custom */}
           <div className="space-y-1.5">
             <div className="grid grid-cols-4 gap-1.5">
-              {activePresets.map((preset) => {
-                const isActive = !isCustom && selectedAmount === preset.amount;
+              {activePresets.map((amt) => {
+                const isSelected = !isCustom && selectedAmount === amt;
+                const formatted =
+                  currency === 'Rs.' ? `Rs. ${amt.toLocaleString()}` : `£${amt}`;
                 return (
                   <button
-                    key={preset.amount}
+                    key={amt}
                     type="button"
                     onClick={() => {
-                      setSelectedAmount(preset.amount);
+                      setSelectedAmount(amt);
                       setIsCustom(false);
                     }}
-                    className={`min-h-[48px] p-1.5 rounded-xl flex flex-col items-center justify-center transition-all cursor-pointer border ${
-                      isActive
-                        ? 'bg-brand-primary text-white border-brand-primary shadow-xs ring-2 ring-brand-primary/20'
+                    className={`h-9 px-1 rounded-xl flex items-center justify-center text-[11px] sm:text-xs font-bold transition-all cursor-pointer border ${
+                      isSelected
+                        ? 'bg-brand-primary text-white border-brand-primary shadow-xs ring-1 ring-brand-primary/25'
                         : 'bg-[#FAF8F3] text-[#25352C] border-[#E3DDD1] hover:border-brand-primary/40 active:scale-97'
                     }`}
                   >
-                    <span className="text-[12px] font-bold leading-tight">
-                      {currency} {preset.amount.toLocaleString()}
-                    </span>
-                    <span
-                      className={`text-[9.5px] leading-none mt-0.5 ${
-                        isActive ? 'text-white/85 font-medium' : 'text-[#6F8074]'
-                      }`}
-                    >
-                      {preset.label}
-                    </span>
+                    <span className="truncate">{formatted}</span>
                   </button>
                 );
               })}
 
-              {/* Custom Amount Button */}
               <button
                 type="button"
                 onClick={() => setIsCustom(true)}
-                className={`min-h-[48px] p-1.5 rounded-xl flex flex-col items-center justify-center transition-all cursor-pointer border ${
+                className={`h-9 px-1 rounded-xl flex items-center justify-center text-[11px] sm:text-xs font-bold transition-all cursor-pointer border ${
                   isCustom
-                    ? 'bg-brand-primary text-white border-brand-primary shadow-xs ring-2 ring-brand-primary/20'
+                    ? 'bg-brand-primary text-white border-brand-primary shadow-xs ring-1 ring-brand-primary/25'
                     : 'bg-[#FAF8F3] text-[#25352C] border-[#E3DDD1] hover:border-brand-primary/40 active:scale-97'
                 }`}
               >
-                <span className="text-[12px] font-bold leading-tight">Custom</span>
-                <span
-                  className={`text-[9.5px] leading-none mt-0.5 ${
-                    isCustom ? 'text-white/85 font-medium' : 'text-[#6F8074]'
-                  }`}
-                >
-                  Any Amount
-                </span>
+                <span>Custom</span>
               </button>
             </div>
 
-            {/* Custom Amount Input Box */}
+            {/* Custom Amount Field */}
             {isCustom && (
-              <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#F6F3EC] border border-brand-primary/50 shadow-2xs">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#F6F3EC] border border-brand-primary/50 shadow-2xs">
                 <span className="text-xs font-bold text-[#35453C]">{currency}</span>
                 <input
                   type="number"
-                  placeholder="Enter custom donation amount"
+                  placeholder="Enter amount"
                   value={customAmount}
                   onChange={(e) => setCustomAmount(e.target.value)}
-                  className="w-full bg-transparent text-sm font-semibold text-[#18261E] focus:outline-none"
+                  className="w-full bg-transparent text-xs font-semibold text-[#18261E] focus:outline-none"
                   autoFocus
                 />
                 {customAmount && (
                   <button
                     type="button"
                     onClick={() => setCustomAmount('')}
-                    className="text-[10px] text-[#7A8A7F] font-semibold hover:text-[#18261E]"
+                    className="text-[10px] text-[#7A8A7F] font-semibold hover:text-[#18261E] cursor-pointer"
                   >
                     Clear
                   </button>
@@ -447,66 +402,15 @@ export const HomeScreen: React.FC = () => {
             )}
           </div>
 
-          {/* Cause Allocation Chips */}
-          <div className="space-y-1.5">
-            <label className="text-[10.5px] font-bold text-[#55665C] uppercase tracking-wider block">
-              Allocate Contribution To:
-            </label>
-            <div className="grid grid-cols-2 gap-1.5">
-              {causesOptions.map((c) => {
-                const Icon = c.icon;
-                const isSelected = quickCause === c.slug;
-                return (
-                  <button
-                    key={c.slug}
-                    type="button"
-                    onClick={() => setQuickCause(c.slug as CauseSlug)}
-                    className={`flex items-center gap-2 p-2 rounded-xl border transition-all cursor-pointer text-left ${
-                      isSelected
-                        ? 'bg-brand-light/80 border-brand-primary text-brand-primary font-bold shadow-2xs'
-                        : 'bg-[#FAF8F3] border-[#E3DDD1] text-[#45554C] hover:border-brand-primary/30'
-                    }`}
-                  >
-                    <div
-                      className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${
-                        isSelected ? 'bg-brand-primary text-white' : 'bg-[#ECE8DF] text-[#55665C]'
-                      }`}
-                    >
-                      <Icon size={12} strokeWidth={2.2} />
-                    </div>
-                    <span className="text-[11.5px] leading-tight truncate">{c.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* High-Priority Donate CTA */}
+          {/* Full-width Prominent Donate CTA: Donate Now → */}
           <button
             type="button"
             onClick={handleQuickDonate}
-            className="w-full min-h-[48px] rounded-xl bg-brand-primary hover:bg-brand-hover text-white text-[13.5px] font-bold flex items-center justify-between px-4 shadow-[0_4px_14px_rgba(20,35,27,0.18)] active:scale-[0.98] transition-all cursor-pointer"
+            className="w-full min-h-[42px] rounded-xl bg-brand-primary hover:bg-brand-hover text-white text-[13.5px] font-bold flex items-center justify-center gap-1.5 shadow-[0_3px_12px_rgba(31,94,59,0.22)] active:scale-[0.98] transition-all cursor-pointer"
           >
-            <div className="flex items-center gap-1.5 text-left">
-              <span className="capitalize font-semibold text-white/90">
-                {donationType === 'one-time' ? 'One-Time' : 'Monthly'}
-              </span>
-              <span className="text-white/60">·</span>
-              <span className="font-semibold text-white">{activeCauseLabel}</span>
-            </div>
-            <div className="flex items-center gap-1 text-right">
-              <span>
-                {currency} {effectiveAmount.toLocaleString()}
-              </span>
-              <ArrowRight size={15} />
-            </div>
+            <span>Donate Now</span>
+            <ArrowRight size={15} strokeWidth={2.4} />
           </button>
-
-          {/* Trust Guarantee Note */}
-          <div className="flex items-center justify-center gap-1 text-[10px] text-[#69796F] text-center pt-0.5">
-            <Lock size={11} className="text-brand-primary" />
-            <span>Encrypted SSL · Direct Field Delivery · Digital Tax Receipt</span>
-          </div>
         </div>
       </section>
 
